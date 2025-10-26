@@ -109,16 +109,10 @@ def Menu():
                 "8-15": AgeGroup.SCHOOL_AGE,
             }
             age_group = age_map.get(age_str)
-<<<<<<< HEAD
             en_level = level_map.get(level_str)
 
             if not age_group or not en_level:
                 raise ValueError("Неверно выбран возраст или уровень")
-=======
-            
-            if not age_group:
-                raise ValueError("Неверно выбран возраст")
->>>>>>> origin/NIKITA
 
             # Создаем урок
             builder = ConsoleLessonBuilder()
