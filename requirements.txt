@@ -6,3 +6,6 @@
 # Arch Linux: sudo pacman -S tk
 # macOS: tkinter обычно входит в стандартную поставку Python
 
+# Для работы с DeepSeek API
+requests>=2.31.0
+

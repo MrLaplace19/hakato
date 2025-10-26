@@ -1,9 +1,78 @@
 import tkinter as tk
 from tkinter import messagebox, scrolledtext, ttk
 import db_service
+import requests
+import json
 
 # --- Хранилище текущего пользователя ---
 current_user = None
+
+# --- DeepSeek API ---
+DEEPSEEK_API_KEY = "sk-1dd84743d04d4a9a8865bd2678c374e6"
+DEEPSEEK_API_URL = "https://api.deepseek.com/v1/chat/completions"
+
+
+def generate_tasks_with_ai(theme, age_group, vocabulary, duration):
+    """Генерирует задания с помощью DeepSeek AI"""
+    try:
+        # Формируем промпт для AI
+        prompt = f"""Ты - опытный преподаватель английского языка для детей.
+        
+Создай детальный план урока для учеников возраста {age_group} на тему "{theme}".
+Длительность урока: {duration} минут.
+Используй следующие слова из словаря: {', '.join(vocabulary[:10])}.
+
+Верни ответ в формате JSON со следующей структурой:
+{{
+    "phases": [
+        {{"name": "название фазы", "duration": время в минутах, "activities": ["активность 1", "активность 2"]}},
+        ...
+    ],
+    "materials": ["материал 1", "материал 2", ...],
+    "learning_objectives": ["цель 1", "цель 2", ...]
+}}
+
+Урок должен быть интерактивным, веселым и подходящим для возраста {age_group}.
+Ответь ТОЛЬКО JSON, без дополнительного текста."""
+
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {DEEPSEEK_API_KEY}"
+        }
+        
+        data = {
+            "model": "deepseek-chat",
+            "messages": [
+                {"role": "system", "content": "You are an expert English teacher for children. You always respond in Russian and provide structured lesson plans in JSON format."},
+                {"role": "user", "content": prompt}
+            ],
+            "temperature": 0.7,
+            "max_tokens": 1500
+        }
+        
+        response = requests.post(DEEPSEEK_API_URL, headers=headers, json=data, timeout=30)
+        
+        if response.status_code == 200:
+            result = response.json()
+            content = result['choices'][0]['message']['content']
+            
+            # Пытаемся извлечь JSON из ответа
+            try:
+                # Убираем markdown code blocks если есть
+                if content.startswith('```'):
+                    json_start = content.find('{')
+                    json_end = content.rfind('}') + 1
+                    content = content[json_start:json_end]
+                
+                ai_plan = json.loads(content)
+                return ai_plan
+            except (json.JSONDecodeError, KeyError):
+                return None
+        else:
+            return None
+    except Exception as e:
+        print(f"Ошибка при работе с DeepSeek API: {e}")
+        return None
 
 
 # --- Функция для центрирования окна ---
@@ -35,13 +104,19 @@ class ConsoleLessonBuilder:
 
 
 class LessonPlan:
-    def __init__(self, theme, age_group, level, duration):
+    def __init__(self, theme, age_group, level, duration, use_ai=True):
         self.theme = theme
         self.age_group = age_group
         self.level = level
         self.duration = duration
-        self.tasks = self._generate_tasks()
+        self.use_ai = use_ai
         self.vocabulary = self._generate_vocabulary()
+        self.tasks = self._generate_tasks()
+        self.ai_plan = None
+        
+        # Пытаемся получить план от AI если включено
+        if self.use_ai and self.vocabulary:
+            self.ai_plan = generate_tasks_with_ai(self.theme, self.age_group, self.vocabulary, self.duration)
 
     def _generate_vocabulary(self):
         """Генерирует словарь по теме"""
@@ -656,38 +731,79 @@ class LessonPlan:
         return age_tasks[:3]  # Возвращаем максимум 3 задания
 
     def get_lesson_plan(self):
-        phases = {
-            30: ["Разминка (3 мин)", "Изучение лексики (12 мин)", "Задания (10 мин)", "Завершение (5 мин)"],
-            45: ["Разминка (5 мин)", "Изучение лексики (15 мин)", "Задания (20 мин)", "Завершение (5 мин)"],
-            60: ["Разминка (10 мин)", "Изучение лексики (20 мин)", "Задания (25 мин)", "Завершение (5 мин)"],
-            90: ["Разминка (10 мин)", "Изучение лексики (25 мин)", "Задания (45 мин)", "Завершение (10 мин)"]
-        }
-        
         plan = f"🎓 ПЛАН УРОКА\n"
         plan += f"Тема: {self.theme.title()}\n"
         plan += f"Возраст: {self.age_group}\n"
         plan += f"Длительность: {self.duration} минут\n"
         
-        plan += f"\n📚 СЛОВАРЬ ({len(self.vocabulary)} слов):\n"
-        for word in self.vocabulary:
-            plan += f"• {word}\n"
+        # Если есть план от AI, используем его
+        if self.ai_plan:
+            plan += f"\n🤖 Сгенерировано с помощью AI\n"
+            
+            # Цели обучения
+            if "learning_objectives" in self.ai_plan:
+                plan += f"\n🎯 ЦЕЛИ УРОКА:\n"
+                for obj in self.ai_plan["learning_objectives"]:
+                    plan += f"• {obj}\n"
+            
+            # Фазы урока
+            if "phases" in self.ai_plan:
+                plan += f"\n⏰ ФАЗЫ УРОКА:\n"
+                for phase in self.ai_plan["phases"]:
+                    phase_name = phase.get("name", "Фаза")
+                    phase_duration = phase.get("duration", "")
+                    activities = phase.get("activities", [])
+                    
+                    plan += f"\n• {phase_name} ({phase_duration} мин)\n"
+                    for activity in activities:
+                        plan += f"  - {activity}\n"
+            
+            # Словарь
+            plan += f"\n📚 СЛОВАРЬ ({len(self.vocabulary)} слов):\n"
+            for word in self.vocabulary:
+                plan += f"• {word}\n"
+            
+            # Материалы
+            if "materials" in self.ai_plan:
+                plan += f"\n📦 МАТЕРИАЛЫ:\n"
+                for material in self.ai_plan["materials"]:
+                    plan += f"• {material}\n"
+            else:
+                plan += f"\n📦 МАТЕРИАЛЫ:\n"
+                plan += f"• Карточки со словами по теме '{self.theme}'\n"
+                plan += f"• Раскраски и рабочие листы\n"
+                plan += f"• Аудиозаписи и песни\n"
+                plan += f"• Игрушки и предметы для демонстрации\n"
         
-        plan += f"\n⏰ ФАЗЫ УРОКА:\n"
+        else:
+            # Используем заготовленные задания
+            phases = {
+                30: ["Разминка (3 мин)", "Изучение лексики (12 мин)", "Задания (10 мин)", "Завершение (5 мин)"],
+                45: ["Разминка (5 мин)", "Изучение лексики (15 мин)", "Задания (20 мин)", "Завершение (5 мин)"],
+                60: ["Разминка (10 мин)", "Изучение лексики (20 мин)", "Задания (25 мин)", "Завершение (5 мин)"],
+                90: ["Разминка (10 мин)", "Изучение лексики (25 мин)", "Задания (45 мин)", "Завершение (10 мин)"]
+            }
+            
+            plan += f"\n📚 СЛОВАРЬ ({len(self.vocabulary)} слов):\n"
+            for word in self.vocabulary:
+                plan += f"• {word}\n"
+            
+            plan += f"\n⏰ ФАЗЫ УРОКА:\n"
         for phase in phases.get(self.duration, phases[45]):
             plan += f"• {phase}\n"
-        
-        plan += f"\n🎯 КОНКРЕТНЫЕ ЗАДАНИЯ:\n"
-        for i, task in enumerate(self.tasks, 1):
-            plan += f"\n{i}. {task['type']}\n"
-            plan += f"   📝 Описание: {task['description']}\n"
-            plan += f"   💡 Пример: {task['example']}\n"
-            plan += f"   ✅ Решение: {task['solution']}\n"
-        
-        plan += f"\n📦 МАТЕРИАЛЫ:\n"
-        plan += f"• Карточки со словами по теме '{self.theme}'\n"
-        plan += f"• Раскраски и рабочие листы\n"
-        plan += f"• Аудиозаписи и песни\n"
-        plan += f"• Игрушки и предметы для демонстрации\n"
+            
+            plan += f"\n🎯 КОНКРЕТНЫЕ ЗАДАНИЯ:\n"
+            for i, task in enumerate(self.tasks, 1):
+                plan += f"\n{i}. {task['type']}\n"
+                plan += f"   📝 Описание: {task['description']}\n"
+                plan += f"   💡 Пример: {task['example']}\n"
+                plan += f"   ✅ Решение: {task['solution']}\n"
+            
+            plan += f"\n📦 МАТЕРИАЛЫ:\n"
+            plan += f"• Карточки со словами по теме '{self.theme}'\n"
+            plan += f"• Раскраски и рабочие листы\n"
+            plan += f"• Аудиозаписи и песни\n"
+            plan += f"• Игрушки и предметы для демонстрации\n"
         
         return plan
 
@@ -788,11 +904,21 @@ def Constructor(parent_window=None):
             if age_str not in age_map:
                 raise ValueError("Неверная возрастная группа")
 
+            # Показываем индикатор загрузки
+            output.delete("1.0", tk.END)
+            output.insert("1.0", "🔄 Генерирую план урока...\nПожалуйста, подождите...")
+            win.update()
+
             # Используем фиксированный уровень (beginner) для всех уроков
+            # AI включен по умолчанию
             lesson = ConsoleLessonBuilder()._generate_lesson(theme, age_map[age_str], duration)
             output.delete("1.0", tk.END)
             output.insert("1.0", lesson.get_lesson_plan())
-            messagebox.showinfo("Готово", "Урок успешно создан!")
+            
+            if lesson.ai_plan:
+                messagebox.showinfo("Готово", "Детальный урок успешно создан с помощью AI! 🤖")
+            else:
+                messagebox.showinfo("Готово", "Урок успешно создан!")
         except ValueError as ve:
             messagebox.showerror("Ошибка", f"Некорректное значение: {ve}")
         except Exception as e:
