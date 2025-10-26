@@ -9,25 +9,16 @@ current_user = None
 # --- Классы для Конструктора уроков ---
 class AgeGroup:
     TODDLERS = "1-3"
-    PRESCHOOL = "3-6"
-    EARLY_SCHOOL = "6-9"
-    MID_SCHOOL = "9-12"
-    TEENS = "12-15"
-
-
-class EnglishLevel:
-    BEGINNER = "beginner"
-    ELEMENTARY = "elementary"
-    INTERMEDIATE = "intermediate"
-    UPPER_INTERMEDIATE = "upper-intermediate"
+    PRESCHOOL = "4-7"
+    SCHOOL_AGE = "8-15"
 
 
 class ConsoleLessonBuilder:
-    def _generate_lesson(self, theme, age_group, level, duration):
+    def _generate_lesson(self, theme, age_group, duration):
         return LessonPlan(
             theme=theme,
             age_group=age_group.value if hasattr(age_group, 'value') else age_group,
-            level=level.value if hasattr(level, 'value') else level,
+            level="beginner",  # Фиксированный уровень
             duration=duration
         )
 
@@ -68,49 +59,70 @@ def Constructor():
     frame = tk.Frame(win, bg="#f0f8ff", padx=20, pady=20)
     frame.pack(fill="both", expand=True)
 
-    # Тема
-    tk.Label(frame, text="Тема урока:", font=("Arial", 12), bg="#f0f8ff").grid(row=0, column=0, sticky="w", pady=10)
-    theme_var = tk.StringVar(value="животные")
-    ttk.Combobox(frame, textvariable=theme_var, values=["животные", "цвета", "еда", "семья", "одежда", "дом", "школа", "хобби"], width=30).grid(row=0, column=1)
+    # Возрастная группа (первая)
+    tk.Label(frame, text="Возрастная группа:", font=("Arial", 12), bg="#f0f8ff").grid(row=0, column=0, sticky="w", pady=10)
+    age_var = tk.StringVar()
+    age_combo = ttk.Combobox(frame, textvariable=age_var, values=["Дети 1-3 года", "Дошкольники 4-7 лет", "Школьники 8-15 лет"], width=30, state="readonly")
+    age_combo.grid(row=0, column=1)
 
-    # Возраст
-    tk.Label(frame, text="Возраст:", font=("Arial", 12), bg="#f0f8ff").grid(row=1, column=0, sticky="w", pady=10)
-    age_var = tk.StringVar(value="3-6")
-    ttk.Combobox(frame, textvariable=age_var, values=["1-3", "3-6", "6-9", "9-12", "12-15"], width=30).grid(row=1, column=1)
+    # Тема урока (вторая, зависит от возраста)
+    tk.Label(frame, text="Тема урока:", font=("Arial", 12), bg="#f0f8ff").grid(row=1, column=0, sticky="w", pady=10)
+    theme_var = tk.StringVar()
+    theme_combo = ttk.Combobox(frame, textvariable=theme_var, width=30, state="readonly")
+    theme_combo.grid(row=1, column=1)
 
-    # Уровень
-    tk.Label(frame, text="Уровень:", font=("Arial", 12), bg="#f0f8ff").grid(row=2, column=0, sticky="w", pady=10)
-    level_var = tk.StringVar(value="beginner")
-    ttk.Combobox(frame, textvariable=level_var, values=["beginner", "elementary", "intermediate", "upper-intermediate"], width=30).grid(row=2, column=1)
-
-    # Длительность
-    tk.Label(frame, text="Длительность (мин):", font=("Arial", 12), bg="#f0f8ff").grid(row=3, column=0, sticky="w", pady=10)
+    # Длительность (третья)
+    tk.Label(frame, text="Длительность (мин):", font=("Arial", 12), bg="#f0f8ff").grid(row=2, column=0, sticky="w", pady=10)
     duration_var = tk.StringVar(value="45")
-    tk.Entry(frame, textvariable=duration_var, width=32).grid(row=3, column=1)
+    duration_combo = ttk.Combobox(frame, textvariable=duration_var, values=["30", "45", "60", "90"], width=30, state="readonly")
+    duration_combo.grid(row=2, column=1)
 
     # Область вывода
-    tk.Label(frame, text="План урока:", font=("Arial", 12, "bold"), bg="#f0f8ff").grid(row=5, column=0, columnspan=2, sticky="w", pady=10)
+    tk.Label(frame, text="План урока:", font=("Arial", 12, "bold"), bg="#f0f8ff").grid(row=4, column=0, columnspan=2, sticky="w", pady=10)
     output = scrolledtext.ScrolledText(frame, width=70, height=20, font=("Courier", 10))
-    output.grid(row=6, column=0, columnspan=2, pady=10)
+    output.grid(row=5, column=0, columnspan=2, pady=10)
+
+    # Словари тем для разных возрастных групп
+    themes_by_age = {
+        "Дети 1-3 года": ["животные", "цвета", "части тела", "еда", "игрушки", "семья", "звуки животных"],
+        "Дошкольники 4-7 лет": ["животные", "цвета", "семья", "еда", "одежда", "дом", "транспорт", "природа", "погода", "игрушки", "цифры 1-10"],
+        "Школьники 8-15 лет": ["животные", "семья", "еда", "одежда", "дом", "школа", "хобби", "спорт", "путешествия", "технологии", "окружающая среда", "карьера", "искусство", "музыка", "литература"]
+    }
+
+    def update_themes(*args):
+        """Обновляет список тем в зависимости от выбранной возрастной группы"""
+        selected_age = age_var.get()
+        if selected_age in themes_by_age:
+            theme_combo['values'] = themes_by_age[selected_age]
+            theme_combo.set('')  # Очищаем выбор темы
+            theme_combo['state'] = 'readonly'
+
+    # Привязываем обновление тем к выбору возраста
+    age_var.trace('w', update_themes)
 
     def create_lesson():
         try:
             theme = theme_var.get().strip()
             age_str = age_var.get().strip()
-            level_str = level_var.get().strip()
             duration = int(duration_var.get())
 
-            age_map = {"1-3": AgeGroup.TODDLERS, "3-6": AgeGroup.PRESCHOOL, "6-9": AgeGroup.EARLY_SCHOOL,
-                       "9-12": AgeGroup.MID_SCHOOL, "12-15": AgeGroup.TEENS}
-            level_map = {"beginner": EnglishLevel.BEGINNER, "elementary": EnglishLevel.ELEMENTARY,
-                         "intermediate": EnglishLevel.INTERMEDIATE, "upper-intermediate": EnglishLevel.UPPER_INTERMEDIATE}
+            if not theme:
+                raise ValueError("Выберите тему урока")
+            if not age_str:
+                raise ValueError("Выберите возрастную группу")
+
+            # Маппинг возрастов на константы
+            age_map = {
+                "Дети 1-3 года": AgeGroup.TODDLERS,
+                "Дошкольники 4-7 лет": AgeGroup.PRESCHOOL, 
+                "Школьники 8-15 лет": AgeGroup.SCHOOL_AGE
+            }
 
             if age_str not in age_map:
-                raise ValueError("Неверный возраст")
-            if level_str not in level_map:
-                raise ValueError("Неверный уровень")
+                raise ValueError("Неверная возрастная группа")
 
-            lesson = ConsoleLessonBuilder()._generate_lesson(theme, age_map[age_str], level_map[level_str], duration)
+            # Используем фиксированный уровень (beginner) для всех уроков
+            lesson = ConsoleLessonBuilder()._generate_lesson(theme, age_map[age_str], duration)
             output.delete("1.0", tk.END)
             output.insert("1.0", lesson.get_lesson_plan())
             messagebox.showinfo("Готово", "Урок успешно создан!")
@@ -120,7 +132,7 @@ def Constructor():
             messagebox.showerror("Ошибка", f"Произошла ошибка: {e}")
 
     tk.Button(frame, text="Создать урок", font=("Arial", 14, "bold"), bg="#4CAF50", fg="white",
-              width=25, height=2, command=create_lesson).grid(row=4, column=0, columnspan=2, pady=20)
+              width=25, height=2, command=create_lesson).grid(row=3, column=0, columnspan=2, pady=20)
 
 
 # --- Главное меню ---
