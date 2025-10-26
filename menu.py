@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk, messagebox, scrolledtext
-from base_c import ConsoleLessonBuilder, AgeGroup, EnglishLevel
+from constuctor import ConsoleLessonBuilder, AgeGroup, EnglishLevel
 
 
 def Menu():
@@ -102,7 +102,7 @@ def Menu():
             level_str = level_var.get()
             duration = int(duration_var.get())
 
-            # Конвертируем в enum
+            # Конвертируем в классы конструктора
             age_map = {
                 "1-3": AgeGroup.TODDLERS,
                 "3-6": AgeGroup.PRESCHOOL,
@@ -117,8 +117,11 @@ def Menu():
                 "upper-intermediate": EnglishLevel.UPPER_INTERMEDIATE,
             }
 
-            age_group = age_map[age_str]
-            en_level = level_map[level_str]
+            age_group = age_map.get(age_str)
+            en_level = level_map.get(level_str)
+            
+            if not age_group or not en_level:
+                raise ValueError("Неверно выбран возраст или уровень")
 
             # Создаем урок
             builder = ConsoleLessonBuilder()
