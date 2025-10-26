@@ -266,6 +266,138 @@ def show_preschool_activities_window(root_parent=None):
     activities_win.mainloop()
 
 
+# --- Окно клубов для школьников ---
+def show_school_clubs_window(root_parent=None):
+    # Закрываем родительское окно если оно есть
+    if root_parent:
+        root_parent.destroy()
+    
+    clubs_win = tk.Tk()
+    clubs_win.title("Клубы для школьников")
+    clubs_win.geometry("750x700")
+    clubs_win.resizable(False, False)
+    clubs_win.configure(bg="#f0f8ff")
+    
+    center_window(clubs_win)
+    
+    # Заголовок
+    header_frame = tk.Frame(clubs_win, bg="#2196F3", height=100)
+    header_frame.pack(fill="x")
+    header_frame.pack_propagate(False)
+    
+    tk.Label(header_frame, text="🏫 Языковые клубы для школьников", 
+             font=("Arial", 20, "bold"), bg="#2196F3", fg="white").pack(pady=25)
+    
+    # Контейнер для клубов
+    container = tk.Frame(clubs_win, bg="#f0f8ff", padx=30, pady=20)
+    container.pack(fill="both", expand=True)
+    
+    # Описание
+    desc_frame = tk.Frame(container, bg="#e3f2fd", relief="solid", bd=1, padx=15, pady=10)
+    desc_frame.pack(fill="x", pady=(0, 15))
+    tk.Label(desc_frame, text="Выберите увлекательный клуб для развития английского языка!",
+             font=("Arial", 11), bg="#e3f2fd", fg="#333").pack()
+    
+    # Описание для каждого клуба
+    clubs = [
+        {
+            "title": "🌟 Project X - Приключения на английском",
+            "description": "Читаем захватывающие истории и обсуждаем приключения",
+            "details": "• Уровень: Beginner – Elementary (A1–A2)\n• Возраст: 1–4 классы\n• Чтение захватывающих историй\n• Создание комиксов и карт\n• Ролевые игры\n• 60–90 минут"
+        },
+        {
+            "title": "🔍 English Detectives - Клуб юных следопытов",
+            "description": "Увлекательные расследования и поиск улик на английском",
+            "details": "• Уровень: Elementary – Pre-Intermediate (A2–B1)\n• Возраст: 3–6 классы\n• Поиск улик и подсказок\n• Интервью с подозреваемыми\n• Написание рапортов\n• Критическое мышление"
+        },
+        {
+            "title": "✍️ Little Storymakers - Клуб писателей",
+            "description": "Создаём свои книги и сочиняем истории на английском",
+            "details": "• Уровень: Elementary+\n• Возраст: 4–6 классы\n• Написание рассказов\n• Оформление книг\n• Выставка авторов\n• Развитие письма"
+        },
+        {
+            "title": "🌍 Global Kids - Клуб культур и путешествий",
+            "description": "Изучаем культуру разных стран на английском",
+            "details": "• Уровень: Все уровни\n• Возраст: 1–6 классы\n• Изучение стран и культур\n• Кулинарные мастер-классы\n• Празднование традиций\n• Носитель языка"
+        },
+        {
+            "title": "🎭 Stage Time! - Театральный клуб",
+            "description": "Ставим спектакли и развиваем уверенность в речи",
+            "details": "• Уровень: Elementary и выше\n• Возраст: 3–6 классы\n• Постановка спектаклей\n• Разучивание ролей\n• Премьера для родителей\n• Развитие беглости"
+        }
+    ]
+    
+    # Функция для открытия клуба
+    def open_club(club):
+        club_win = tk.Toplevel(clubs_win)
+        club_win.title(club["title"])
+        club_win.geometry("600x550")
+        club_win.resizable(False, False)
+        club_win.configure(bg="#f0f8ff")
+        center_window(club_win)
+        
+        # Заголовок клуба
+        header = tk.Frame(club_win, bg="#2196F3", height=80)
+        header.pack(fill="x")
+        header.pack_propagate(False)
+        tk.Label(header, text=club["title"], 
+                font=("Arial", 16, "bold"), bg="#2196F3", fg="white", wraplength=500).pack(pady=20)
+        
+        # Основной контент
+        content = tk.Frame(club_win, bg="#f0f8ff", padx=30, pady=20)
+        content.pack(fill="both", expand=True)
+        
+        # Описание
+        tk.Label(content, text="Описание клуба:", 
+                font=("Arial", 12, "bold"), bg="#f0f8ff", fg="#333").pack(anchor="w", pady=(0, 5))
+        tk.Label(content, text=club["description"], 
+                font=("Arial", 11), bg="#f0f8ff", fg="#555").pack(anchor="w", pady=(0, 15))
+        
+        # Детали
+        tk.Label(content, text="Что включает:", 
+                font=("Arial", 12, "bold"), bg="#f0f8ff", fg="#333").pack(anchor="w", pady=(0, 5))
+        
+        details_frame = tk.Frame(content, bg="#e3f2fd", relief="solid", bd=1, padx=15, pady=10)
+        details_frame.pack(fill="x", pady=(0, 15))
+        tk.Label(details_frame, text=club["details"], 
+                font=("Arial", 11), bg="#e3f2fd", fg="#333", justify="left").pack(anchor="w")
+        
+        # Кнопка закрыть
+        tk.Button(content, text="✅ Закрыть", font=("Arial", 12, "bold"),
+                  bg="#2196F3", fg="white", width=15, height=2,
+                  activebackground="#1976D2", relief="flat", bd=0,
+                  command=club_win.destroy).pack(pady=20)
+    
+    # Создаём кнопки для каждого клуба
+    for i, club in enumerate(clubs):
+        btn_frame = tk.Frame(container, bg="#f0f8ff")
+        btn_frame.pack(pady=10, fill="x")
+        
+        btn = tk.Button(btn_frame, text=f"{club['title']}\n\n{club['description']}",
+                        font=("Arial", 11, "bold"), bg="#64b5f6", fg="white",
+                        height=3, relief="flat", bd=0,
+                        activebackground="#42a5f5", cursor="hand2",
+                        wraplength=650, justify="left", anchor="w",
+                        command=lambda c=club: open_club(c))
+        btn.pack(padx=10, pady=5, fill="x")
+    
+    # Кнопка возврата
+    back_frame = tk.Frame(container, bg="#f0f8ff")
+    back_frame.pack(pady=20)
+    
+    def back_to_menu():
+        clubs_win.destroy()
+        Menu()
+    
+    tk.Button(back_frame, text="🔙 Назад в главное меню", 
+              font=("Arial", 11, "bold"), bg="#999999", fg="white",
+              width=30, height=2, relief="flat", bd=0,
+              activebackground="#777777",
+              command=back_to_menu).pack()
+    
+    clubs_win.mainloop()
+
+
 # --- Главное меню ---
 def Menu():
     root = tk.Tk()
@@ -273,7 +405,7 @@ def Menu():
     root.geometry("800x700")
     root.resizable(False, False)
     root.configure(bg="#f0f8ff")
-    
+
     # Центрируем окно
     center_window(root)
 
@@ -331,8 +463,7 @@ def Menu():
                                f"🎯 Изучайте материал для дошкольников!\n"
                                f"Увлекательные игры и занятия уже доступны!")
         else:
-            messagebox.showinfo("📘 Школьники", 
-                               "Языковые клубы с проектами и играми!")
+            show_school_clubs_window(root)
 
     # Создаем кнопку дошкольных занятий - меняем стиль если недоступна (недоступна > 7)
     if user_age is not None and user_age > 7:
@@ -420,7 +551,7 @@ def show_register_window(login_win, login_parent_entry=None):
     
     # Красивый градиентный фон
     reg_win.configure(bg="#f0f8ff")
-    
+
     # Центрируем окно
     center_window(reg_win)
 
@@ -473,7 +604,7 @@ def show_register_window(login_win, login_parent_entry=None):
              bg="#f0f8ff", fg="#333").pack(anchor="w", pady=(0, 8))
     
     role_var = tk.StringVar(value=None)
-    
+
     # Стильные радиокнопки
     role_container = tk.Frame(role_frame, bg="#e3f2fd", relief="solid", bd=1)
     role_container.pack(fill="x", pady=5)
@@ -544,7 +675,7 @@ def show_login_window():
     win.geometry("420x500")
     win.resizable(False, False)
     win.configure(bg="#f0f8ff")
-    
+
     # Центрируем окно
     center_window(win)
     
