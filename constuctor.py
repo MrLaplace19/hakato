@@ -6,6 +6,17 @@ import db_service
 current_user = None
 
 
+# --- Функция для центрирования окна ---
+def center_window(window):
+    """Центрирует окно на экране"""
+    window.update_idletasks()
+    width = window.winfo_width()
+    height = window.winfo_height()
+    x = (window.winfo_screenwidth() // 2) - (width // 2)
+    y = (window.winfo_screenheight() // 2) - (height // 2)
+    window.geometry(f'{width}x{height}+{x}+{y}')
+
+
 # --- Классы для Конструктора уроков ---
 class AgeGroup:
     TODDLERS = "1-3"
@@ -123,56 +134,279 @@ def Constructor():
               width=25, height=2, command=create_lesson).grid(row=4, column=0, columnspan=2, pady=20)
 
 
+# --- Окно игровых занятий для дошкольников ---
+def show_preschool_activities_window(root_parent=None):
+    # Закрываем родительское окно если оно есть
+    if root_parent:
+        root_parent.destroy()
+    
+    activities_win = tk.Tk()
+    activities_win.title("Игровые занятия для дошкольников")
+    activities_win.geometry("750x700")
+    activities_win.resizable(False, False)
+    activities_win.configure(bg="#f0f8ff")
+    
+    center_window(activities_win)
+    
+    # Заголовок
+    header_frame = tk.Frame(activities_win, bg="#4CAF50", height=100)
+    header_frame.pack(fill="x")
+    header_frame.pack_propagate(False)
+    
+    tk.Label(header_frame, text="🎨 Игровые занятия для дошкольников", 
+             font=("Arial", 20, "bold"), bg="#4CAF50", fg="white").pack(pady=25)
+    
+    # Контейнер для занятий
+    container = tk.Frame(activities_win, bg="#f0f8ff", padx=30, pady=20)
+    container.pack(fill="both", expand=True)
+    
+    # Описание
+    desc_frame = tk.Frame(container, bg="#e8f5e9", relief="solid", bd=1, padx=15, pady=10)
+    desc_frame.pack(fill="x", pady=(0, 15))
+    tk.Label(desc_frame, text="Выберите увлекательное занятие для развития английского языка!",
+             font=("Arial", 11), bg="#e8f5e9", fg="#333").pack()
+    
+    # Описание для каждого занятия
+    activities = [
+        {
+            "title": "🦁 Веселые животные",
+            "description": "Узнаём названия животных на английском через игру",
+            "details": "• Карточки с животными\n• Звуки животных\n• Угадай животное\n• 15 минут"
+        },
+        {
+            "title": "🎨 Цвета и формы",
+            "description": "Изучаем цвета и формы через творчество",
+            "details": "• Рисование и раскраски\n• Игра 'Найди цвет'\n• Лепка из пластилина\n• 20 минут"
+        },
+        {
+            "title": "🎵 Семейная песенка",
+            "description": "Поём и танцуем, изучая семью",
+            "details": "• Песня 'Family Song'\n• Движения под музыку\n• Карточки с семьёй\n• 15 минут"
+        },
+        {
+            "title": "🎭 Танцуем и учимся",
+            "description": "Движения под музыку с изучением слов",
+            "details": "• Танцы под песни\n• Повторение слов\n• Мимика и жесты\n• 20 минут"
+        },
+        {
+            "title": "✏️ Творческое рисование",
+            "description": "Рисуем и изучаем английский одновременно",
+            "details": "• Рисование цифр и букв\n• Раскраски с английскими словами\n• Фантазийные рисунки\n• 25 минут"
+        }
+    ]
+    
+    # Функция для открытия занятия
+    def open_activity(activity):
+        activity_win = tk.Toplevel(activities_win)
+        activity_win.title(activity["title"])
+        activity_win.geometry("600x500")
+        activity_win.resizable(False, False)
+        activity_win.configure(bg="#f0f8ff")
+        center_window(activity_win)
+        
+        # Заголовок занятия
+        header = tk.Frame(activity_win, bg="#4CAF50", height=80)
+        header.pack(fill="x")
+        header.pack_propagate(False)
+        tk.Label(header, text=activity["title"], 
+                font=("Arial", 18, "bold"), bg="#4CAF50", fg="white").pack(pady=20)
+        
+        # Основной контент
+        content = tk.Frame(activity_win, bg="#f0f8ff", padx=30, pady=20)
+        content.pack(fill="both", expand=True)
+        
+        # Описание
+        tk.Label(content, text="Описание занятия:", 
+                font=("Arial", 12, "bold"), bg="#f0f8ff", fg="#333").pack(anchor="w", pady=(0, 5))
+        tk.Label(content, text=activity["description"], 
+                font=("Arial", 11), bg="#f0f8ff", fg="#555").pack(anchor="w", pady=(0, 15))
+        
+        # Детали
+        tk.Label(content, text="Что включено:", 
+                font=("Arial", 12, "bold"), bg="#f0f8ff", fg="#333").pack(anchor="w", pady=(0, 5))
+        
+        details_frame = tk.Frame(content, bg="#e8f5e9", relief="solid", bd=1, padx=15, pady=10)
+        details_frame.pack(fill="x", pady=(0, 15))
+        tk.Label(details_frame, text=activity["details"], 
+                font=("Arial", 11), bg="#e8f5e9", fg="#333", justify="left").pack(anchor="w")
+        
+        # Кнопка закрыть
+        tk.Button(content, text="✅ Закрыть", font=("Arial", 12, "bold"),
+                  bg="#4CAF50", fg="white", width=15, height=2,
+                  activebackground="#45a049", relief="flat", bd=0,
+                  command=activity_win.destroy).pack(pady=20)
+    
+    # Создаём кнопки для каждого занятия
+    for i, activity in enumerate(activities):
+        btn_frame = tk.Frame(container, bg="#f0f8ff")
+        btn_frame.pack(pady=10, fill="x")
+        
+        btn = tk.Button(btn_frame, text=f"{activity['title']}\n\n{activity['description']}",
+                        font=("Arial", 12, "bold"), bg="#66bb6a", fg="white",
+                        height=3, relief="flat", bd=0,
+                        activebackground="#4caf50", cursor="hand2",
+                        wraplength=650, justify="center", anchor="w",
+                        command=lambda a=activity: open_activity(a))
+        btn.pack(padx=10, pady=5, fill="x")
+    
+    # Кнопка возврата
+    back_frame = tk.Frame(container, bg="#f0f8ff")
+    back_frame.pack(pady=20)
+    
+    def back_to_menu():
+        activities_win.destroy()
+        Menu()
+    
+    tk.Button(back_frame, text="🔙 Назад в главное меню", 
+              font=("Arial", 11, "bold"), bg="#999999", fg="white",
+              width=30, height=2, relief="flat", bd=0,
+              activebackground="#777777",
+              command=back_to_menu).pack()
+    
+    activities_win.mainloop()
+
+
 # --- Главное меню ---
 def Menu():
     root = tk.Tk()
     root.title("Полиглотики — Главное меню")
-    root.geometry("750x600")
+    root.geometry("800x700")
+    root.resizable(False, False)
     root.configure(bg="#f0f8ff")
+    
+    # Центрируем окно
+    center_window(root)
 
-    tk.Label(root, text="ПОЛИГЛОТИКИ", font=("Arial", 30, "bold"), bg="#4169e1", fg="white", pady=20).pack(fill="x")
-    tk.Label(root, text="Детский языковой центр", font=("Arial", 16), bg="#f0f8ff", fg="#4169e1", pady=10).pack()
+    # Красивый заголовок с градиентом
+    header_frame = tk.Frame(root, bg="#4169e1", height=120)
+    header_frame.pack(fill="x")
+    header_frame.pack_propagate(False)
+    
+    tk.Label(header_frame, text="🎓 ПОЛИГЛОТИКИ", 
+             font=("Arial", 32, "bold"), bg="#4169e1", fg="white").pack(pady=(20, 5))
+    tk.Label(header_frame, text="Детский языковой центр", 
+             font=("Arial", 16), bg="#4169e1", fg="white").pack(pady=(0, 20))
 
-    tk.Label(root,
+    # Основной контейнер
+    main_container = tk.Frame(root, bg="#f0f8ff", padx=30, pady=20)
+    main_container.pack(fill="both", expand=True)
+
+    # Описание
+    desc_frame = tk.Frame(main_container, bg="#e3f2fd", relief="solid", bd=1, padx=20, pady=15)
+    desc_frame.pack(fill="x", pady=15)
+    
+    tk.Label(desc_frame,
              text="Комплексное развитие: пение, танцы, рисование, творчество\n"
                   "Задания на внимание, память, логику и мышление",
-             font=("Arial", 12), bg="#f0f8ff", fg="#333333", pady=15, wraplength=650).pack()
+             font=("Arial", 12), bg="#e3f2fd", fg="#333", wraplength=650).pack()
 
-    btn_frame = tk.Frame(root, bg="#f0f8ff")
-    btn_frame.pack(pady=25)
+    # Кнопки занятий
+    btn_frame = tk.Frame(main_container, bg="#f0f8ff")
+    btn_frame.pack(pady=20)
+    
+    # Получаем возраст пользователя
+    user_age = None
+    if current_user:
+        user_age = current_user.get("age")
+    
+    # Функция для проверки доступа к дошкольным занятиям (доступны <= 7 лет)
+    def check_preschool_access():
+        if user_age is not None and user_age > 7:
+            year_word = "лет" if user_age > 4 else ("год" if user_age == 1 else "года")
+            messagebox.showinfo("⛔ Недоступно", 
+                               f"🎨 Игровые занятия для дошкольников доступны только до 7 лет включительно.\n\n"
+                               f"Ваш возраст: {user_age} {year_word}.\n\n"
+                               f"📚 Для вас доступны клубы для школьников!\n"
+                               f"Увлекательные проекты и продвинутые занятия ждут!")
+        else:
+            show_preschool_activities_window(root)
+    
+    # Функция для проверки доступа к клубам (доступны >= 7 лет)
+    def check_club_access():
+        if user_age is not None and user_age < 7:
+            year_word = "лет" if user_age > 4 else ("год" if user_age == 1 else "года")
+            messagebox.showinfo("⛔ Недоступно", 
+                               f"📚 Клубы для школьников доступны только с 7 лет.\n\n"
+                               f"Ваш возраст: {user_age} {year_word}.\n\n"
+                               f"🎯 Изучайте материал для дошкольников!\n"
+                               f"Увлекательные игры и занятия уже доступны!")
+        else:
+            messagebox.showinfo("📘 Школьники", 
+                               "Языковые клубы с проектами и играми!")
 
-    tk.Button(btn_frame, text="Игровые занятия\nдля дошкольников", font=("Arial", 14, "bold"),
-              bg="#09d810", fg="black", width=20, height=3,
-              command=lambda: messagebox.showinfo("😊 Дошкольники", "Пение, танцы, игры на иностранном языке!")) \
-        .grid(row=0, column=0, padx=20)
+    # Создаем кнопку дошкольных занятий - меняем стиль если недоступна (недоступна > 7)
+    if user_age is not None and user_age > 7:
+        tk.Button(btn_frame, text="🎨 Игровые занятия\nдля дошкольников", 
+                  font=("Arial", 14, "bold"), bg="#999999", fg="white", 
+                  width=22, height=3, relief="flat", bd=0,
+                  activebackground="#777777", cursor="hand2",
+                  command=check_preschool_access).grid(row=0, column=0, padx=15)
+        
+        # Добавляем метку "Недоступно"
+        tk.Label(btn_frame, text="👶 До 7 лет", 
+                font=("Arial", 10, "italic"), bg="#f0f8ff", fg="#999").grid(row=1, column=0, pady=5)
+    else:
+        tk.Button(btn_frame, text="🎨 Игровые занятия\nдля дошкольников", 
+                  font=("Arial", 14, "bold"), bg="#4CAF50", fg="white", 
+                  width=22, height=3, relief="flat", bd=0,
+                  activebackground="#45a049", cursor="hand2",
+                  command=check_preschool_access).grid(row=0, column=0, padx=15)
 
-    tk.Button(btn_frame, text="Клубы\nдля школьников", font=("Arial", 14, "bold"),
-              bg="#0a8fe2", fg="black", width=20, height=3,
-              command=lambda: messagebox.showinfo("📘 Школьники", "Языковые клубы с проектами и играми!")) \
-        .grid(row=0, column=1, padx=20)
+    # Создаем кнопку клубов - меняем стиль если недоступна (недоступна < 7)
+    if user_age is not None and user_age < 7:
+        tk.Button(btn_frame, text="📚 Клубы\nдля школьников", 
+                  font=("Arial", 14, "bold"), bg="#999999", fg="white", 
+                  width=22, height=3, relief="flat", bd=0,
+                  activebackground="#777777", cursor="hand2",
+                  command=check_club_access).grid(row=0, column=1, padx=15)
+        
+        # Добавляем метку "Недоступно"
+        tk.Label(btn_frame, text="⏳ Доступно с 7 лет", 
+                font=("Arial", 10, "italic"), bg="#f0f8ff", fg="#999").grid(row=1, column=1, pady=5)
+    else:
+        tk.Button(btn_frame, text="📚 Клубы\nдля школьников", 
+                  font=("Arial", 14, "bold"), bg="#2196F3", fg="white", 
+                  width=22, height=3, relief="flat", bd=0,
+                  activebackground="#0b7dda", cursor="hand2",
+                  command=check_club_access).grid(row=0, column=1, padx=15)
 
-    center_frame = tk.Frame(root, bg="#f0f8ff")
-    center_frame.pack(pady=30)
+    # Центральная кнопка конструктора
+    center_frame = tk.Frame(main_container, bg="#f0f8ff")
+    center_frame.pack(pady=25)
 
     # Показываем кнопку конструктора только для учителей
     if current_user and current_user.get("role") == "учитель":
-        tk.Button(center_frame, text="🛠️ Конструктор занятий", font=("Arial", 16, "bold"),
-                  bg="#FF9800", fg="white", width=25, height=2, command=Constructor).pack()
+        tk.Button(center_frame, text="🛠️ Конструктор занятий", 
+                  font=("Arial", 16, "bold"), bg="#FF9800", fg="white", 
+                  width=28, height=2, relief="flat", bd=0,
+                  activebackground="#f57c00", cursor="hand2",
+                  command=Constructor).pack()
 
-    tk.Label(root,
-             text="Методика: One Person - One Language\nРазвиваем речь, восприятие, чтение, письмо",
-             font=("Arial", 11), bg="#f0f8ff", fg="#555555", pady=15).pack()
+    # Методика
+    method_frame = tk.Frame(main_container, bg="#e3f2fd", relief="solid", bd=1, padx=20, pady=12)
+    method_frame.pack(fill="x", pady=10)
+    
+    tk.Label(method_frame,
+             text="📖 Методика: One Person - One Language\n💡 Развиваем речь, восприятие, чтение, письмо",
+             font=("Arial", 11), bg="#e3f2fd", fg="#555555").pack()
 
+    # Информация о пользователе внизу
+    user_frame = tk.Frame(root, bg="#e8eaf6", height=50)
+    user_frame.pack(fill="x", side="bottom")
+    user_frame.pack_propagate(False)
+    
     if current_user:
         username = current_user.get("login", "Пользователь")
         user_role = current_user.get("role", "")
         role_text = f" ({user_role})" if user_role else ""
+        emoji = "👨‍🏫" if user_role == "учитель" else "🎓"
     else:
         username = "Пользователь"
         role_text = ""
+        emoji = "👤"
     
-    tk.Label(root, text=f"© 2025 Полиглотики — Добро пожаловать, {username}{role_text}!",
-             font=("Arial", 10), bg="#f0f8ff", fg="#777").pack(side="bottom", pady=10)
+    tk.Label(user_frame, text=f"{emoji} © 2025 Полиглотики — Добро пожаловать, {username}{role_text}!",
+             font=("Arial", 11), bg="#e8eaf6", fg="#555").pack(pady=12)
 
     root.mainloop()
 
@@ -181,28 +415,76 @@ def Menu():
 def show_register_window(login_win, login_parent_entry=None):
     reg_win = tk.Toplevel()
     reg_win.title("Регистрация")
-    reg_win.geometry("400x400")
+    reg_win.geometry("450x620")
+    reg_win.resizable(False, False)
+    
+    # Красивый градиентный фон
     reg_win.configure(bg="#f0f8ff")
+    
+    # Центрируем окно
+    center_window(reg_win)
 
-    tk.Label(reg_win, text="Создайте аккаунт", font=("Arial", 20, "bold"), bg="#f0f8ff", fg="#4169e1").pack(pady=20)
+    # Заголовок с иконкой
+    header_frame = tk.Frame(reg_win, bg="#4169e1", height=80)
+    header_frame.pack(fill="x")
+    header_frame.pack_propagate(False)
+    
+    tk.Label(header_frame, text="✏️ Создайте аккаунт", 
+             font=("Arial", 22, "bold"), bg="#4169e1", fg="white").pack(pady=20)
+    
+    # Создаем контейнер для полей
+    container = tk.Frame(reg_win, bg="#f0f8ff", padx=30, pady=20)
+    container.pack(fill="both", expand=True)
 
-    tk.Label(reg_win, text="Логин:", font=("Arial", 12), bg="#f0f8ff").pack(pady=5)
-    login_entry = tk.Entry(reg_win, width=30)
-    login_entry.pack()
+    # Логин с иконкой
+    login_frame = tk.Frame(container, bg="#f0f8ff")
+    login_frame.pack(fill="x", pady=10)
+    tk.Label(login_frame, text="👤 Логин:", font=("Arial", 11, "bold"), 
+             bg="#f0f8ff", fg="#333").pack(anchor="w")
+    login_entry = tk.Entry(login_frame, width=35, font=("Arial", 11), 
+                          highlightthickness=2, relief="solid", bd=1)
+    login_entry.config(highlightbackground="#ccc", highlightcolor="#4169e1")
+    login_entry.pack(pady=5)
+    
+    # Пароль с иконкой
+    password_frame = tk.Frame(container, bg="#f0f8ff")
+    password_frame.pack(fill="x", pady=10)
+    tk.Label(password_frame, text="🔒 Пароль:", font=("Arial", 11, "bold"), 
+             bg="#f0f8ff", fg="#333").pack(anchor="w")
+    password_entry = tk.Entry(password_frame, show="*", width=35, font=("Arial", 11),
+                             highlightthickness=2, relief="solid", bd=1)
+    password_entry.config(highlightbackground="#ccc", highlightcolor="#4169e1")
+    password_entry.pack(pady=5)
 
-    tk.Label(reg_win, text="Пароль:", font=("Arial", 12), bg="#f0f8ff").pack(pady=5)
-    password_entry = tk.Entry(reg_win, show="*", width=30)
-    password_entry.pack()
+    # Возраст с иконкой
+    age_frame = tk.Frame(container, bg="#f0f8ff")
+    age_frame.pack(fill="x", pady=10)
+    tk.Label(age_frame, text="🎂 Возраст:", font=("Arial", 11, "bold"), 
+             bg="#f0f8ff", fg="#333").pack(anchor="w")
+    age_entry = tk.Entry(age_frame, width=35, font=("Arial", 11),
+                        highlightthickness=2, relief="solid", bd=1)
+    age_entry.config(highlightbackground="#ccc", highlightcolor="#4169e1")
+    age_entry.pack(pady=5)
 
-    tk.Label(reg_win, text="Возраст:", font=("Arial", 12), bg="#f0f8ff").pack(pady=5)
-    age_entry = tk.Entry(reg_win, width=30)
-    age_entry.pack()
-
-    tk.Label(reg_win, text="Роль:", font=("Arial", 12), bg="#f0f8ff").pack(pady=10)
+    # Роль с красивым дизайном
+    role_frame = tk.Frame(container, bg="#f0f8ff")
+    role_frame.pack(fill="x", pady=15)
+    tk.Label(role_frame, text="👥 Выберите роль:", font=("Arial", 11, "bold"), 
+             bg="#f0f8ff", fg="#333").pack(anchor="w", pady=(0, 8))
+    
     role_var = tk.StringVar(value=None)
-
-    tk.Radiobutton(reg_win, text="Ученик", variable=role_var, value="ученик", bg="#f0f8ff", font=("Arial", 11)).pack()
-    tk.Radiobutton(reg_win, text="Учитель", variable=role_var, value="учитель", bg="#f0f8ff", font=("Arial", 11)).pack()
+    
+    # Стильные радиокнопки
+    role_container = tk.Frame(role_frame, bg="#e3f2fd", relief="solid", bd=1)
+    role_container.pack(fill="x", pady=5)
+    
+    tk.Radiobutton(role_container, text="🎓 Ученик", variable=role_var, value="ученик", 
+                   bg="#e3f2fd", font=("Arial", 11), padx=20, pady=8,
+                   selectcolor="#bbdefb", activebackground="#90caf9").pack(side="left", padx=10)
+    
+    tk.Radiobutton(role_container, text="👨‍🏫 Учитель", variable=role_var, value="учитель", 
+                   bg="#e3f2fd", font=("Arial", 11), padx=20, pady=8,
+                   selectcolor="#bbdefb", activebackground="#90caf9").pack(side="left", padx=10)
 
     def submit():
         global current_user
@@ -218,13 +500,23 @@ def show_register_window(login_win, login_parent_entry=None):
             messagebox.showwarning("Ошибка", "Введите корректный возраст.")
             return
         
+        age = int(age_str)
+        
+        # Проверка возраста для учеников
+        if role == "ученик" and age > 14:
+            messagebox.showwarning("Ошибка", 
+                                 f"🎓 Ученики принимаются только до 14 лет (до 6 класса включительно).\n\n"
+                                 f"Ваш возраст: {age} лет.\n\n"
+                                 f"Для регистрации в качестве учителя выберите роль 'Учитель'.")
+            return
+        
         # Проверяем через БД
         if db_service.db_check_user_exists(login):
             messagebox.showwarning("Ошибка", "Логин уже занят.")
             return
 
         # Добавляем пользователя в БД
-        db_service.db_insert_user_simple(login, password, int(age_str), role)
+        db_service.db_insert_user_simple(login, password, age, role)
 
         messagebox.showinfo("Успех", "Вы успешно зарегистрированы! Теперь войдите в систему.")
         reg_win.destroy()
@@ -234,26 +526,59 @@ def show_register_window(login_win, login_parent_entry=None):
             login_parent_entry.delete(0, tk.END)
             login_parent_entry.insert(0, login)
 
-    tk.Button(reg_win, text="Зарегистрироваться", font=("Arial", 12, "bold"), bg="#4CAF50", fg="white",
+    # Стильная кнопка регистрации
+    tk.Button(container, text="✅ Зарегистрироваться", font=("Arial", 13, "bold"), 
+              bg="#4CAF50", fg="white", width=25, height=2,
+              activebackground="#45a049", activeforeground="white",
+              relief="flat", bd=0, cursor="hand2",
               command=submit).pack(pady=20)
+    
+    # Фокус на первое поле
+    login_entry.focus()
 
 
 # --- Окно входа ---
 def show_login_window():
     win = tk.Tk()
     win.title("Вход в Полиглотики")
-    win.geometry("400x350")
+    win.geometry("420x500")
+    win.resizable(False, False)
     win.configure(bg="#f0f8ff")
+    
+    # Центрируем окно
+    center_window(win)
+    
+    # Красивый заголовок
+    header_frame = tk.Frame(win, bg="#4169e1", height=100)
+    header_frame.pack(fill="x")
+    header_frame.pack_propagate(False)
+    
+    tk.Label(header_frame, text="🎓 Добро пожаловать!", 
+             font=("Arial", 26, "bold"), bg="#4169e1", fg="white").pack(pady=25)
+    
+    # Контейнер для полей
+    container = tk.Frame(win, bg="#f0f8ff", padx=40, pady=30)
+    container.pack(fill="both", expand=True)
 
-    tk.Label(win, text="Добро пожаловать!", font=("Arial", 24, "bold"), bg="#f0f8ff", fg="#4169e1").pack(pady=20)
+    # Логин
+    login_frame = tk.Frame(container, bg="#f0f8ff")
+    login_frame.pack(fill="x", pady=15)
+    tk.Label(login_frame, text="👤 Логин:", font=("Arial", 11, "bold"), 
+             bg="#f0f8ff", fg="#333").pack(anchor="w")
+    login_entry = tk.Entry(login_frame, width=35, font=("Arial", 11),
+                          highlightthickness=2, relief="solid", bd=1)
+    login_entry.config(highlightbackground="#ccc", highlightcolor="#4169e1")
+    login_entry.pack(pady=5)
 
-    tk.Label(win, text="Логин:", font=("Arial", 12), bg="#f0f8ff").pack(pady=5)
-    login_entry = tk.Entry(win, width=30)
-    login_entry.pack()
-
-    tk.Label(win, text="Пароль:", font=("Arial", 12), bg="#f0f8ff").pack(pady=5)
-    password_entry = tk.Entry(win, show="*", width=30)
-    password_entry.pack()
+    # Пароль
+    password_frame = tk.Frame(container, bg="#f0f8ff")
+    password_frame.pack(fill="x", pady=15)
+    tk.Label(password_frame, text="🔒 Пароль:", font=("Arial", 11, "bold"), 
+             bg="#f0f8ff", fg="#333").pack(anchor="w")
+    password_entry = tk.Entry(password_frame, show="*", width=35, font=("Arial", 11),
+                             highlightthickness=2, relief="solid", bd=1)
+    password_entry.config(highlightbackground="#ccc", highlightcolor="#4169e1")
+    password_entry.pack(pady=5)
 
     def login():
         global current_user
@@ -273,13 +598,26 @@ def show_login_window():
         else:
             messagebox.showerror("Ошибка", "Неверный логин или пароль.")
 
-    tk.Button(win, text="Войти", font=("Arial", 14, "bold"), bg="#4169e1", fg="white", width=15,
-              command=login).pack(pady=20)
+    # Кнопка входа
+    tk.Button(container, text="🚪 Войти", font=("Arial", 13, "bold"), 
+              bg="#4169e1", fg="white", width=20, height=2,
+              activebackground="#2a56d1", activeforeground="white",
+              relief="flat", bd=0, cursor="hand2",
+              command=login).pack(pady=(0, 10))
 
-    link = tk.Label(win, text="Нет аккаунта? Зарегистрироваться", font=("Arial", 10, "underline"),
-                    bg="#f0f8ff", fg="#1e90ff", cursor="hand2")
-    link.pack(pady=10)
-    link.bind("<Button-1>", lambda e: show_register_window(win, login_entry))
+    # Кнопка регистрации
+    tk.Button(container, text="✨ Создать аккаунт", font=("Arial", 12, "bold"), 
+              bg="#4CAF50", fg="white", width=20, height=2,
+              activebackground="#45a049", activeforeground="white",
+              relief="flat", bd=0, cursor="hand2",
+              command=lambda: show_register_window(win, login_entry)).pack(pady=10)
+    
+    # Текст под кнопками
+    tk.Label(container, text="Нет аккаунта? Нажмите кнопку выше", 
+             font=("Arial", 10), bg="#f0f8ff", fg="#999").pack(pady=5)
+    
+    # Фокус на первое поле
+    login_entry.focus()
 
     win.mainloop()
 
