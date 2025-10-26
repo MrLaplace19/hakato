@@ -146,150 +146,209 @@ class Lesson:
 
 class ConsoleLessonBuilder:
     def __init__(self):
-        self.themes = ["животные", "цвета", "еда", "семья", "одежда", "дом", "школа", "хобби"]
+        self.themes = [
+            "животные",
+            "цвета",
+            "еда",
+            "семья",
+            "одежда",
+            "дом",
+            "школа",
+            "хобби",
+        ]
         self.activity_templates = self._load_templates()
-    
+
     def _load_templates(self):
         return {
             "warm_up": {
                 "3-6": [
-                    LessonActivity("Приветственная песня", ActivityType.SONG, 5,
-                                 "Веселая песня с движениями", ["колонка"],
-                                 ["Включить музыку", "Показать движения", "Петь вместе с детьми"])
+                    LessonActivity(
+                        "Приветственная песня",
+                        ActivityType.SONG,
+                        5,
+                        "Веселая песня с движениями",
+                        ["колонка"],
+                        [
+                            "Включить музыку",
+                            "Показать движения",
+                            "Петь вместе с детьми",
+                        ],
+                    )
                 ],
                 "6-9": [
-                    LessonActivity("Вопрос-ответ", ActivityType.DIALOGUE, 5,
-                                 "Быстрые вопросы о настроении и погоде", [],
-                                 ["Задать вопрос 'How are you?'", "Дети отвечают", "Спросить о погоде"])
-                ]
+                    LessonActivity(
+                        "Вопрос-ответ",
+                        ActivityType.DIALOGUE,
+                        5,
+                        "Быстрые вопросы о настроении и погоде",
+                        [],
+                        [
+                            "Задать вопрос 'How are you?'",
+                            "Дети отвечают",
+                            "Спросить о погоде",
+                        ],
+                    )
+                ],
             },
             "vocabulary": {
                 "животные": [
-                    LessonActivity("Угадай животное", ActivityType.GAME, 10,
-                                 "Дети угадывают животных по звукам и описанию", ["карточки животных"],
-                                 ["Показать карточку", "Издать звук животного", "Дети угадывают название"])
+                    LessonActivity(
+                        "Угадай животное",
+                        ActivityType.GAME,
+                        10,
+                        "Дети угадывают животных по звукам и описанию",
+                        ["карточки животных"],
+                        [
+                            "Показать карточку",
+                            "Издать звук животного",
+                            "Дети угадывают название",
+                        ],
+                    )
                 ],
                 "цвета": [
-                    LessonActivity("Охота за цветами", ActivityType.GAME, 10,
-                                 "Найти предметы определенного цвета в комнате", [],
-                                 ["Назвать цвет", "Дети находят предметы этого цвета", "Назвать предметы на английском"])
-                ]
-            }
+                    LessonActivity(
+                        "Охота за цветами",
+                        ActivityType.GAME,
+                        10,
+                        "Найти предметы определенного цвета в комнате",
+                        [],
+                        [
+                            "Назвать цвет",
+                            "Дети находят предметы этого цвета",
+                            "Назвать предметы на английском",
+                        ],
+                    )
+                ],
+            },
         }
-    
+
     def start(self):
         print("🚀 КОНСТРУКТОР УРОКОВ АНГЛИЙСКОГО ДЛЯ ДЕТЕЙ")
         print("=" * 50)
-        
+
         while True:
             lesson = self._create_lesson_interactive()
             if lesson:
-                print("\n" + "="*50)
+                print("\n" + "=" * 50)
                 print(lesson.get_lesson_plan())
-                print("="*50)
-                
+                print("=" * 50)
+
                 save = input("\n💾 Сохранить этот урок? (д/н): ").lower()
-                if save == 'д':
+                if save == "д":
                     self._save_lesson(lesson)
-                
+
                 another = input("\n🔄 Создать еще один урок? (д/н): ").lower()
-                if another != 'д':
+                if another != "д":
                     print("👋 До свидания!")
                     break
-    
+
     def _create_lesson_interactive(self):
-        print("\n" + "="*50)
+        print("\n" + "=" * 50)
         print("Создание нового урока")
-        print("="*50)
-        
+        print("=" * 50)
+
         # Выбор темы
         print("\n🎨 Выберите тему урока:")
         for i, theme in enumerate(self.themes, 1):
             print(f"  {i}. {theme}")
-        
+
         try:
             theme_choice = int(input("Введите номер темы: ")) - 1
             theme = self.themes[theme_choice]
         except (ValueError, IndexError):
             print("❌ Неверный выбор темы!")
             return None
-        
+
         # Выбор возрастной группы
         print("\n👶 Выберите возрастную группу:")
         age_groups = list(AgeGroup)
         for i, age_group in enumerate(age_groups, 1):
             print(f"  {i}. {age_group.value} лет - {age_group.name}")
-        
+
         try:
             age_choice = int(input("Введите номер возрастной группы: ")) - 1
             age_group = age_groups[age_choice]
         except (ValueError, IndexError):
             print("❌ Неверный выбор возрастной группы!")
             return None
-        
+
         # Выбор уровня
         print("\n⭐ Выберите уровень английского:")
         levels = list(EnglishLevel)
         for i, level in enumerate(levels, 1):
             print(f"  {i}. {level.value}")
-        
+
         try:
             level_choice = int(input("Введите номер уровня: ")) - 1
             en_level = levels[level_choice]
         except (ValueError, IndexError):
             print("❌ Неверный выбор уровня!")
             return None
-        
+
         # Длительность урока
         try:
-            duration = int(input("\n⏱️  Введите длительность урока (в минутах, 30-60): "))
+            duration = int(
+                input("\n⏱️  Введите длительность урока (в минутах, 30-60): ")
+            )
             if duration < 30 or duration > 60:
                 print("⚠️  Длительность установлена 45 минут")
                 duration = 45
         except ValueError:
             print("⚠️  Длительность установлена 45 минут")
             duration = 45
-        
+
         # Создание урока
         return self._generate_lesson(theme, age_group, en_level, duration)
-    
-    def _generate_lesson(self, theme: str, age_group: AgeGroup, 
-                        en_level: EnglishLevel, duration: int) -> Lesson:
+
+    def _generate_lesson(
+        self, theme: str, age_group: AgeGroup, en_level: EnglishLevel, duration: int
+    ) -> Lesson:
         # Генерация названия
         title = f"Веселый урок: {theme}"
-        
+
         # Цели урока
         objectives = self._generate_objectives(theme, en_level, age_group)
-        
+
         # Словарный запас
         vocabulary = self._generate_vocabulary(theme, age_group)
-        
+
         # Активности
         activities = self._generate_activities(theme, age_group, en_level, duration)
-        
-        return Lesson(title, theme, age_group, en_level, duration, objectives, activities, vocabulary)
-    
-    def _generate_objectives(self, theme: str, level: EnglishLevel, age_group: AgeGroup) -> List[str]:
+
+        return Lesson(
+            title,
+            theme,
+            age_group,
+            en_level,
+            duration,
+            objectives,
+            activities,
+            vocabulary,
+        )
+
+    def _generate_objectives(
+        self, theme: str, level: EnglishLevel, age_group: AgeGroup
+    ) -> List[str]:
         base_objectives = {
             "beginner": [
                 "Познакомиться с базовой лексикой по теме",
                 "Научиться произносить 5-7 новых слов",
-                "Развить интерес к английскому через игры"
+                "Развить интерес к английскому через игры",
             ],
             "elementary": [
                 "Расширить словарный запас по теме",
-                "Научиться строить простые предложения", 
-                "Потренировать аудирование и говорение"
+                "Научиться строить простые предложения",
+                "Потренировать аудирование и говорение",
             ],
             "intermediate": [
                 "Закрепить лексику по теме",
                 "Практиковать диалогическую речь",
-                "Развить коммуникативные навыки"
-            ]
+                "Развить коммуникативные навыки",
+            ],
         }
-        
+
         return base_objectives.get(level.value, ["Развить языковые навыки"])
-    
+
     def _generate_vocabulary(self, theme: str, age_group: AgeGroup) -> List[str]:
         vocabulary_bank = {
             "животные": ["cat", "dog", "bird", "fish", "rabbit", "lion", "elephant"],
@@ -298,50 +357,61 @@ class ConsoleLessonBuilder:
             "семья": ["mother", "father", "sister", "brother", "grandma", "grandpa"],
             "одежда": ["dress", "shirt", "pants", "shoes", "hat", "socks", "jacket"],
             "дом": ["house", "room", "bed", "table", "chair", "window", "door"],
-            "школа": ["book", "pen", "pencil", "teacher", "student", "classroom", "desk"],
-            "хобби": ["read", "draw", "sing", "dance", "play", "swim", "run"]
+            "школа": [
+                "book",
+                "pen",
+                "pencil",
+                "teacher",
+                "student",
+                "classroom",
+                "desk",
+            ],
+            "хобби": ["read", "draw", "sing", "dance", "play", "swim", "run"],
         }
-        
+
         words = vocabulary_bank.get(theme, [])
         # Ограничиваем количество слов по возрасту
         word_limit = {"3-6": 4, "6-9": 6, "9-12": 8, "12-15": 10}
-        return words[:word_limit.get(age_group.value, 5)]
-    
-    def _generate_activities(self, theme: str, age_group: AgeGroup, 
-                           level: EnglishLevel, duration: int) -> List[LessonActivity]:
+        return words[: word_limit.get(age_group.value, 5)]
+
+    def _generate_activities(
+        self, theme: str, age_group: AgeGroup, level: EnglishLevel, duration: int
+    ) -> List[LessonActivity]:
         activities = []
-        
+
         # Разминка (5 минут)
         warm_up = self._create_warm_up(age_group)
         activities.append(warm_up)
-        
+
         # Основная часть (оставшееся время минус 5 минут на завершение)
         main_duration = duration - 10
-        main_activities = self._create_main_activities(theme, age_group, level, main_duration)
+        main_activities = self._create_main_activities(
+            theme, age_group, level, main_duration
+        )
         activities.extend(main_activities)
-        
+
         # Завершение (5 минут)
         wrap_up = LessonActivity(
-            "Подведение итогов", 
-            ActivityType.DIALOGUE, 
+            "Подведение итогов",
+            ActivityType.DIALOGUE,
             5,
             "Повторение и закрепление изученного",
             [],
-            ["Спросить что запомнилось", "Повторить ключевые слова", "Похвалить детей"]
+            ["Спросить что запомнилось", "Повторить ключевые слова", "Похвалить детей"],
         )
         activities.append(wrap_up)
-        
+
         return activities
-    
+
     def _create_warm_up(self, age_group: AgeGroup) -> LessonActivity:
         if age_group == AgeGroup.PRESCHOOL:
             return LessonActivity(
-                "Веселая разминка", 
-                ActivityType.SONG, 
+                "Веселая разминка",
+                ActivityType.SONG,
                 5,
                 "Песня с движениями для настроя на урок",
                 ["аудиозапись песни"],
-                ["Включить музыку", "Показать движения", "Петь вместе с детьми"]
+                ["Включить музыку", "Показать движения", "Петь вместе с детьми"],
             )
         else:
             return LessonActivity(
@@ -350,13 +420,18 @@ class ConsoleLessonBuilder:
                 5,
                 "Вопрос-ответ для активизации речи",
                 [],
-                ["Задать простые вопросы", "Выслушать ответы", "Поправить при необходимости"]
+                [
+                    "Задать простые вопросы",
+                    "Выслушать ответы",
+                    "Поправить при необходимости",
+                ],
             )
-    
-    def _create_main_activities(self, theme: str, age_group: AgeGroup, 
-                              level: EnglishLevel, duration: int) -> List[LessonActivity]:
+
+    def _create_main_activities(
+        self, theme: str, age_group: AgeGroup, level: EnglishLevel, duration: int
+    ) -> List[LessonActivity]:
         activities = []
-        
+
         # Активность на введение лексики (40% времени)
         vocab_duration = int(duration * 0.4)
         vocab_activity = LessonActivity(
@@ -365,10 +440,15 @@ class ConsoleLessonBuilder:
             vocab_duration,
             f"Знакомство со словами по теме '{theme}' через игру",
             ["карточки", "изображения"],
-            ["Показать карточки", "Произнести слова", "Повторить хором", "Сыграть в игру"]
+            [
+                "Показать карточки",
+                "Произнести слова",
+                "Повторить хором",
+                "Сыграть в игру",
+            ],
         )
         activities.append(vocab_activity)
-        
+
         # Практическая активность (60% времени)
         practice_duration = duration - vocab_duration
         practice_activity = LessonActivity(
@@ -377,14 +457,21 @@ class ConsoleLessonBuilder:
             practice_duration,
             "Закрепление материала через игровую деятельность",
             ["игровые материалы", "реквизит"],
-            ["Объяснить правила", "Провести игру", "Поощрять использование английского", "Подвести итоги игры"]
+            [
+                "Объяснить правила",
+                "Провести игру",
+                "Поощрять использование английского",
+                "Подвести итоги игры",
+            ],
         )
         activities.append(practice_activity)
-        
+
         return activities
-    
+
     def _save_lesson(self, lesson: Lesson):
-        filename = f"{lesson.theme}_{lesson.age_group.value}_{lesson.en_level.value}.json"
+        filename = (
+            f"{lesson.theme}_{lesson.age_group.value}_{lesson.en_level.value}.json"
+        )
         lesson_data = {
             "title": lesson.title,
             "theme": lesson.theme,
@@ -400,15 +487,23 @@ class ConsoleLessonBuilder:
                     "duration": activity.duration,
                     "description": activity.description,
                     "materials": activity.materials,
-                    "instructions": activity.instructions
+                    "instructions": activity.instructions,
                 }
                 for activity in lesson.activities
-            ]
+            ],
         }
-        
+
         try:
-            with open(filename, 'w', encoding='utf-8') as f:
+            with open(filename, "w", encoding="utf-8") as f:
                 json.dump(lesson_data, f, ensure_ascii=False, indent=2)
             print(f"✅ Урок сохранен в файл: {filename}")
         except Exception as e:
             print(f"❌ Ошибка сохранения: {e}")
+
+
+class Person:
+    def __init__(self, login, password, age, role):
+        self.login = login
+        self.password = password
+        self.age = age
+        self.role = role
