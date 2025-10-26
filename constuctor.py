@@ -883,6 +883,9 @@ def Constructor(parent_window=None):
     # Привязываем обновление тем к выбору возраста
     age_var.trace('w', update_themes)
 
+    # Переменная для хранения текущего урока
+    current_lesson_data = {"lesson": None, "theme": "", "age_group": "", "duration": 0}
+
     def create_lesson():
         try:
             theme = theme_var.get().strip()
@@ -912,8 +915,18 @@ def Constructor(parent_window=None):
             # Используем фиксированный уровень (beginner) для всех уроков
             # AI включен по умолчанию
             lesson = ConsoleLessonBuilder()._generate_lesson(theme, age_map[age_str], duration)
+            
+            # Сохраняем данные урока
+            current_lesson_data["lesson"] = lesson
+            current_lesson_data["theme"] = theme
+            current_lesson_data["age_group"] = age_str
+            current_lesson_data["duration"] = duration
+            
             output.delete("1.0", tk.END)
             output.insert("1.0", lesson.get_lesson_plan())
+            
+            # Включаем кнопку сохранения
+            save_lesson_btn.config(state="normal")
             
             if lesson.ai_plan:
                 messagebox.showinfo("Готово", "Детальный урок успешно создан с помощью AI! 🤖")
@@ -924,9 +937,317 @@ def Constructor(parent_window=None):
         except Exception as e:
             messagebox.showerror("Ошибка", f"Произошла ошибка: {e}")
 
-    tk.Button(frame, text="Создать урок", font=("Arial", 14, "bold"), bg="#4CAF50", fg="white",
-              width=25, height=2, command=create_lesson, relief="flat", bd=0, cursor="hand2",
-              activebackground="#45a049").grid(row=3, column=0, columnspan=2, pady=20)
+    # Кнопки
+    button_frame = tk.Frame(frame, bg="#fffacd")
+    button_frame.grid(row=3, column=0, columnspan=2, pady=10, padx=10)
+    
+    tk.Button(button_frame, text="Создать урок", font=("Arial", 14, "bold"), bg="#4CAF50", fg="white",
+              width=15, height=2, command=create_lesson, relief="flat", bd=0, cursor="hand2",
+              activebackground="#45a049").pack(side="left", padx=5)
+    
+    # Кнопка сохранения (появится только после создания урока)
+    save_lesson_btn = tk.Button(button_frame, text="💾 Сохранить урок", font=("Arial", 12, "bold"), 
+                                bg="#2196F3", fg="white", width=15, height=2, 
+                                relief="flat", bd=0, cursor="hand2",
+                                activebackground="#1976D2", state="disabled")
+    save_lesson_btn.pack(side="left", padx=5)
+    
+    def save_current_lesson():
+        if not current_lesson_data["lesson"]:
+            messagebox.showwarning("Предупреждение", "Сначала создайте урок")
+            return
+        
+        if not current_user:
+            messagebox.showwarning("Предупреждение", "Вы не авторизованы")
+            return
+        
+        try:
+            title = f"{current_lesson_data['theme']} ({current_lesson_data['age_group']})"
+            lesson_plan = current_lesson_data["lesson"].get_lesson_plan()
+            
+            db_service.db_save_lesson(
+                title=title,
+                theme=current_lesson_data["theme"],
+                age_group=current_lesson_data["age_group"],
+                duration=current_lesson_data["duration"],
+                lesson_plan=lesson_plan,
+                created_by=current_user.get("login")
+            )
+            
+            messagebox.showinfo("Успех", "Урок успешно сохранен!")
+            save_lesson_btn.config(state="disabled")
+        except Exception as e:
+            messagebox.showerror("Ошибка", f"Не удалось сохранить урок: {e}")
+    
+    save_lesson_btn.config(command=save_current_lesson)
+
+
+# --- Окно сохраненных уроков ---
+def show_saved_lessons_window(root_parent=None):
+    """Показать все сохраненные уроки"""
+    if root_parent:
+        root_parent.withdraw()
+    
+    lessons_win = tk.Tk()
+    lessons_win.title("Сохраненные уроки")
+    lessons_win.geometry("900x700")
+    lessons_win.resizable(False, False)
+    lessons_win.configure(bg="#fffacd")
+    
+    center_window(lessons_win)
+    
+    # Заголовок
+    header_frame = tk.Frame(lessons_win, bg="#4CAF50", height=100)
+    header_frame.pack(fill="x")
+    header_frame.pack_propagate(False)
+    
+    def go_back():
+        lessons_win.destroy()
+        if root_parent:
+            root_parent.deiconify()
+    
+    back_btn = tk.Button(header_frame, text="← Назад", font=("Arial", 10, "bold"),
+                        bg="#2E7D32", fg="white", width=8, height=1,
+                        relief="flat", bd=0, cursor="hand2",
+                        activebackground="#1B5E20", command=go_back)
+    back_btn.place(x=10, y=35)
+    
+    tk.Label(header_frame, text="📚 Сохраненные уроки", 
+             font=("Arial", 24, "bold"), bg="#4CAF50", fg="white").pack(pady=25)
+    
+    # Контейнер для списка уроков
+    main_container = tk.Frame(lessons_win, bg="#fffacd", padx=20, pady=20)
+    main_container.pack(fill="both", expand=True)
+    
+    # Получаем все сохраненные уроки
+    lessons = db_service.db_get_all_lessons()
+    
+    if not lessons:
+        # Нет сохраненных уроков
+        no_lessons_frame = tk.Frame(main_container, bg="#e8f5e9", relief="solid", bd=1, padx=30, pady=30)
+        no_lessons_frame.pack(fill="both", expand=True, pady=100)
+        
+        tk.Label(no_lessons_frame, text="📝 Нет сохраненных уроков", 
+                font=("Arial", 18, "bold"), bg="#e8f5e9", fg="#555").pack(pady=20)
+        
+        tk.Label(no_lessons_frame, text="Создайте уроки в конструкторе и сохраните их", 
+                font=("Arial", 12), bg="#e8f5e9", fg="#777").pack(pady=10)
+    else:
+        # Создаем scrolled frame для списка уроков
+        canvas = tk.Canvas(main_container, bg="#fffacd", highlightthickness=0)
+        scrollbar = ttk.Scrollbar(main_container, orient="vertical", command=canvas.yview)
+        scrollable_frame = tk.Frame(canvas, bg="#fffacd")
+        
+        scrollable_frame.bind(
+            "<Configure>",
+            lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
+        )
+        
+        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+        canvas.configure(yscrollcommand=scrollbar.set)
+        
+        # Функция для просмотра урока
+        def view_lesson(lesson_id):
+            lesson_plan = db_service.db_get_lesson_by_id(lesson_id)
+            if lesson_plan:
+                view_window = tk.Toplevel(lessons_win)
+                view_window.title("План урока")
+                view_window.geometry("800x600")
+                view_window.configure(bg="#fffacd")
+                
+                # Заголовок
+                view_header = tk.Frame(view_window, bg="#4CAF50", height=60)
+                view_header.pack(fill="x")
+                view_header.pack_propagate(False)
+                tk.Label(view_header, text="📄 План урока", 
+                        font=("Arial", 18, "bold"), bg="#4CAF50", fg="white").pack(pady=15)
+                
+                # Контент
+                view_content = scrolledtext.ScrolledText(view_window, width=90, height=30, 
+                                                         font=("Courier", 10), bg="#ffffff", 
+                                                         fg="#333333")
+                view_content.pack(fill="both", expand=True, padx=20, pady=20)
+                view_content.insert("1.0", lesson_plan)
+                view_content.config(state="disabled")
+                
+                # Кнопка закрыть
+                tk.Button(view_window, text="❌ Закрыть", font=("Arial", 12, "bold"),
+                          bg="#D32F2F", fg="white", width=15, height=2,
+                          activebackground="#C62828", relief="flat", bd=0, cursor="hand2",
+                          command=view_window.destroy).pack(pady=10)
+        
+        # Функция для редактирования урока
+        def edit_lesson(lesson_id):
+            full_lesson = db_service.db_get_full_lesson_by_id(lesson_id)
+            if not full_lesson:
+                messagebox.showerror("Ошибка", "Урок не найден")
+                return
+            
+            edit_window = tk.Toplevel(lessons_win)
+            edit_window.title("Редактирование урока")
+            edit_window.geometry("900x750")
+            edit_window.configure(bg="#fffacd")
+            center_window(edit_window)
+            
+            # Заголовок
+            edit_header = tk.Frame(edit_window, bg="#4CAF50", height=80)
+            edit_header.pack(fill="x")
+            edit_header.pack_propagate(False)
+            tk.Label(edit_header, text="✏️ Редактирование урока", 
+                    font=("Arial", 18, "bold"), bg="#4CAF50", fg="white").pack(pady=20)
+            
+            # Основной контейнер
+            main_edit_frame = tk.Frame(edit_window, bg="#fffacd")
+            main_edit_frame.pack(fill="both", expand=True)
+            
+            # Контейнер для скролла
+            scroll_frame = tk.Frame(main_edit_frame, bg="#fffacd")
+            scroll_frame.pack(fill="both", expand=True, padx=10, pady=10)
+            
+            canvas_edit = tk.Canvas(scroll_frame, bg="#fffacd", highlightthickness=0)
+            scrollbar_edit = ttk.Scrollbar(scroll_frame, orient="vertical", command=canvas_edit.yview)
+            edit_content = tk.Frame(canvas_edit, bg="#fffacd", padx=20, pady=15)
+            
+            edit_content.bind(
+                "<Configure>",
+                lambda e: canvas_edit.configure(scrollregion=canvas_edit.bbox("all"))
+            )
+            
+            canvas_edit.create_window((0, 0), window=edit_content, anchor="nw")
+            canvas_edit.configure(yscrollcommand=scrollbar_edit.set)
+            
+            canvas_edit.pack(side="left", fill="both", expand=True)
+            scrollbar_edit.pack(side="right", fill="y")
+            
+            # Тема
+            tk.Label(edit_content, text="Тема урока:", font=("Arial", 11, "bold"), 
+                    bg="#fffacd", fg="#2e7d32").pack(anchor="w", pady=5)
+            theme_entry = tk.Entry(edit_content, width=50, font=("Arial", 11))
+            theme_entry.insert(0, full_lesson["theme"])
+            theme_entry.pack(fill="x", pady=5)
+            
+            # Возрастная группа
+            tk.Label(edit_content, text="Возрастная группа:", font=("Arial", 11, "bold"), 
+                    bg="#fffacd", fg="#2e7d32").pack(anchor="w", pady=5)
+            age_groups = ["Дети 1-3 года", "Дошкольники 4-7 лет", "Школьники 8-15 лет"]
+            age_var_edit = tk.StringVar(value=full_lesson["age_group"])
+            age_combo_edit = ttk.Combobox(edit_content, textvariable=age_var_edit, 
+                                        values=age_groups, width=50, state="readonly")
+            age_combo_edit.pack(fill="x", pady=5)
+            
+            # Длительность
+            tk.Label(edit_content, text="Длительность (мин):", font=("Arial", 11, "bold"), 
+                    bg="#fffacd", fg="#2e7d32").pack(anchor="w", pady=5)
+            duration_entry = tk.Entry(edit_content, width=50, font=("Arial", 11))
+            duration_entry.insert(0, str(full_lesson["duration"]))
+            duration_entry.pack(fill="x", pady=5)
+            
+            # План урока
+            tk.Label(edit_content, text="План урока:", font=("Arial", 11, "bold"), 
+                    bg="#fffacd", fg="#2e7d32").pack(anchor="w", pady=5)
+            plan_text = scrolledtext.ScrolledText(edit_content, width=85, height=18, 
+                                                  font=("Courier", 10), bg="#ffffff", fg="#333333")
+            plan_text.pack(fill="x", pady=5)
+            plan_text.insert("1.0", full_lesson["lesson_plan"])
+            
+            def save_edited_lesson():
+                try:
+                    new_theme = theme_entry.get().strip()
+                    new_age_group = age_var_edit.get().strip()
+                    new_duration = int(duration_entry.get().strip())
+                    new_plan = plan_text.get("1.0", tk.END).strip()
+                    
+                    if not new_theme or not new_age_group or not new_duration or not new_plan:
+                        messagebox.showwarning("Предупреждение", "Заполните все поля")
+                        return
+                    
+                    new_title = f"{new_theme} ({new_age_group})"
+                    
+                    db_service.db_update_lesson(
+                        lesson_id=lesson_id,
+                        title=new_title,
+                        theme=new_theme,
+                        age_group=new_age_group,
+                        duration=new_duration,
+                        lesson_plan=new_plan
+                    )
+                    
+                    messagebox.showinfo("Успех", "Урок успешно обновлен!")
+                    edit_window.destroy()
+                    lessons_win.destroy()
+                    show_saved_lessons_window(root_parent)
+                    
+                except ValueError:
+                    messagebox.showerror("Ошибка", "Введите корректную длительность (число)")
+                except Exception as e:
+                    messagebox.showerror("Ошибка", f"Не удалось сохранить изменения: {e}")
+            
+            # Кнопки размещаем вне области прокрутки
+            btn_frame_edit = tk.Frame(main_edit_frame, bg="#fffacd", pady=10)
+            btn_frame_edit.pack(side="bottom", fill="x", padx=20, pady=10)
+            
+            tk.Button(btn_frame_edit, text="💾 Сохранить изменения", font=("Arial", 12, "bold"),
+                     bg="#4CAF50", fg="white", width=20, height=2,
+                     activebackground="#45a049", relief="flat", bd=0, cursor="hand2",
+                     command=save_edited_lesson).pack(side="left", padx=10)
+            
+            tk.Button(btn_frame_edit, text="❌ Отмена", font=("Arial", 12, "bold"),
+                     bg="#D32F2F", fg="white", width=15, height=2,
+                     activebackground="#C62828", relief="flat", bd=0, cursor="hand2",
+                     command=edit_window.destroy).pack(side="left", padx=10)
+        
+        # Функция для удаления урока
+        def delete_lesson(lesson_id):
+            if messagebox.askyesno("Подтверждение", "Вы уверены, что хотите удалить этот урок?"):
+                db_service.db_delete_lesson(lesson_id)
+                messagebox.showinfo("Успех", "Урок удален")
+                lessons_win.destroy()
+                show_saved_lessons_window(root_parent)
+        
+        # Отображаем каждый урок
+        for i, lesson in enumerate(lessons):
+            lesson_frame = tk.Frame(scrollable_frame, bg="#e8f5e9", relief="solid", bd=2, padx=15, pady=10)
+            lesson_frame.pack(fill="x", pady=5, padx=10)
+            
+            # Информация об уроке
+            info_frame = tk.Frame(lesson_frame, bg="#e8f5e9")
+            info_frame.pack(side="left", fill="both", expand=True)
+            
+            tk.Label(info_frame, text=f"📋 {lesson['title']}", 
+                    font=("Arial", 14, "bold"), bg="#e8f5e9", fg="#2e7d32").pack(anchor="w")
+            tk.Label(info_frame, text=f"🎯 Тема: {lesson['theme']}", 
+                    font=("Arial", 11), bg="#e8f5e9", fg="#555").pack(anchor="w")
+            tk.Label(info_frame, text=f"👶 Возраст: {lesson['age_group']}", 
+                    font=("Arial", 11), bg="#e8f5e9", fg="#555").pack(anchor="w")
+            tk.Label(info_frame, text=f"⏱️ Длительность: {lesson['duration']} мин", 
+                    font=("Arial", 11), bg="#e8f5e9", fg="#555").pack(anchor="w")
+            if lesson['created_by']:
+                tk.Label(info_frame, text=f"👤 Автор: {lesson['created_by']}", 
+                        font=("Arial", 10), bg="#e8f5e9", fg="#777").pack(anchor="w")
+            
+            # Кнопки
+            btn_frame = tk.Frame(lesson_frame, bg="#e8f5e9")
+            btn_frame.pack(side="right")
+            
+            tk.Button(btn_frame, text="👁️ Просмотр", font=("Arial", 11, "bold"),
+                     bg="#2196F3", fg="white", width=11, height=2,
+                     activebackground="#1976D2", relief="flat", bd=0, cursor="hand2",
+                     command=lambda lid=lesson['id']: view_lesson(lid)).pack(side="left", padx=3)
+            
+            tk.Button(btn_frame, text="✏️ Редактировать", font=("Arial", 11, "bold"),
+                     bg="#FF9800", fg="white", width=12, height=2,
+                     activebackground="#F57C00", relief="flat", bd=0, cursor="hand2",
+                     command=lambda lid=lesson['id']: edit_lesson(lid)).pack(side="left", padx=3)
+            
+            tk.Button(btn_frame, text="🗑️ Удалить", font=("Arial", 11, "bold"),
+                     bg="#D32F2F", fg="white", width=11, height=2,
+                     activebackground="#C62828", relief="flat", bd=0, cursor="hand2",
+                     command=lambda lid=lesson['id']: delete_lesson(lid)).pack(side="left", padx=3)
+        
+        canvas.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
+    
+    lessons_win.mainloop()
 
 
 # --- Окно игровых занятий для дошкольников ---
@@ -1372,8 +1693,9 @@ def Menu():
     center_frame = tk.Frame(main_container, bg="#fffacd")
     center_frame.pack(pady=25)
 
-    # Показываем кнопку конструктора только для учителей
+    # Показываем кнопки только для учителей
     if current_user and current_user.get("role") == "учитель":
+        # Кнопка конструктора
         def open_constructor():
             root.withdraw()  # Скрываем главное меню
             Constructor(root)
@@ -1382,7 +1704,18 @@ def Menu():
                   font=("Arial", 16, "bold"), bg="#8BC34A", fg="white", 
                   width=28, height=2, relief="flat", bd=0,
                   activebackground="#689F38", cursor="hand2",
-                  command=open_constructor).pack()
+                  command=open_constructor).pack(pady=5)
+        
+        # Кнопка сохраненных уроков
+        def open_saved_lessons():
+            root.withdraw()
+            show_saved_lessons_window(root)
+        
+        tk.Button(center_frame, text="📚 Сохраненные уроки", 
+                  font=("Arial", 16, "bold"), bg="#FF9800", fg="white", 
+                  width=28, height=2, relief="flat", bd=0,
+                  activebackground="#F57C00", cursor="hand2",
+                  command=open_saved_lessons).pack(pady=5)
 
     # Методика
     method_frame = tk.Frame(main_container, bg="#e8f5e9", relief="solid", bd=1, padx=20, pady=12)

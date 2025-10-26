@@ -5,8 +5,7 @@ from db_service import db_create_words, db_insert_users, db_insert_word_en
 
 def main():
     """
-    Основная функция: запускает GUI-меню 'Полиглотики'.
-    В будущем можно добавить поддержку --console для текстовой версии.
+    Основная функция: запускает GUI-меню 'Полиглотики'
     """
     # Импортируем show_login_window для окна входа
     try:
@@ -24,9 +23,10 @@ def main():
 
 if __name__ == "__main__":
     # Инициализация базы данных и создание тестового пользователя
-    from db_service import db_check_user_exists
+    from db_service import db_check_user_exists, db_create_lessons_table
     
     db_create_words()
+    db_create_lessons_table()  # Создаем таблицу для сохраненных уроков
     db_insert_word_en("theme", "teme", "тема")
     
     # Создаём тестового пользователя только если его ещё нет
