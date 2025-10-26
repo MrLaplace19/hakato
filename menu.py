@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk, messagebox, scrolledtext
-from constuctor import ConsoleLessonBuilder, AgeGroup, EnglishLevel
+from constuctor import ConsoleLessonBuilder, AgeGroup
 
 
 def Menu():
@@ -105,27 +105,24 @@ def Menu():
             # Конвертируем в классы конструктора
             age_map = {
                 "1-3": AgeGroup.TODDLERS,
-                "3-6": AgeGroup.PRESCHOOL,
-                "6-9": AgeGroup.EARLY_SCHOOL,
-                "9-12": AgeGroup.MID_SCHOOL,
-                "12-15": AgeGroup.TEENS,
+                "4-7": AgeGroup.PRESCHOOL,
+                "8-15": AgeGroup.SCHOOL_AGE,
             }
-            level_map = {
-                "beginner": EnglishLevel.BEGINNER,
-                "elementary": EnglishLevel.ELEMENTARY,
-                "intermediate": EnglishLevel.INTERMEDIATE,
-                "upper-intermediate": EnglishLevel.UPPER_INTERMEDIATE,
-            }
-
             age_group = age_map.get(age_str)
+<<<<<<< HEAD
             en_level = level_map.get(level_str)
 
             if not age_group or not en_level:
                 raise ValueError("Неверно выбран возраст или уровень")
+=======
+            
+            if not age_group:
+                raise ValueError("Неверно выбран возраст")
+>>>>>>> origin/NIKITA
 
             # Создаем урок
             builder = ConsoleLessonBuilder()
-            lesson = builder._generate_lesson(theme, age_group, en_level, duration)
+            lesson = builder._generate_lesson(theme, age_group, duration)
 
             # Выводим результат
             output_text.delete("1.0", tk.END)

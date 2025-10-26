@@ -4,19 +4,10 @@ from dataclasses import dataclass
 import json
 
 
-class EnglishLevel(Enum):
-    BEGINNER = "beginner"
-    ELEMENTARY = "elementary"
-    INTERMEDIATE = "intermediate"
-    UPPER_INTERMEDIATE = "upper-intermediate"
-
-
 class AgeGroup(Enum):
     TODDLERS = "1-3"
-    PRESCHOOL = "3-6"
-    EARLY_SCHOOL = "6-9"
-    MID_SCHOOL = "9-12"
-    TEENS = "12-15"
+    PRESCHOOL = "4-7"
+    SCHOOL_AGE = "8-15"
 
 
 class ActivityType(Enum):
@@ -80,7 +71,6 @@ class Lesson:
         title: str,
         theme: str,
         age_group: AgeGroup,
-        en_level: EnglishLevel,
         duration: int,
         objectives: List[str],
         activities: List[LessonActivity],
@@ -103,7 +93,6 @@ class Lesson:
         self.title = title
         self.theme = theme
         self.age_group = age_group
-        self.en_level = en_level
         self.duration = duration
         self.objectives = objectives
         self.activities = activities
@@ -895,13 +884,11 @@ class ConsoleLessonBuilder:
 
         # Выбор уровня
         print("\n⭐ Выберите уровень английского:")
-        levels = list(EnglishLevel)
-        for i, level in enumerate(levels, 1):
-            print(f"  {i}. {level.value}")
+        print("  1. beginner (базовый)")
 
         try:
             level_choice = int(input("Введите номер уровня: ")) - 1
-            en_level = levels[level_choice]
+            en_level = "beginner"  # Фиксированный уровень
         except (ValueError, IndexError):
             print("❌ Неверный выбор уровня!")
             return None
@@ -919,10 +906,10 @@ class ConsoleLessonBuilder:
             duration = 45
 
         # Создание урока
-        return self._generate_lesson(theme, age_group, en_level, duration)
+        return self._generate_lesson(theme, age_group, duration)
 
     def _generate_lesson(
-        self, theme: str, age_group: AgeGroup, en_level: EnglishLevel, duration: int
+        self, theme: str, age_group: AgeGroup, duration: int
     ) -> Lesson:
         # Получаем шаблон урока
         template = self._get_lesson_template(age_group, en_level)
@@ -931,7 +918,7 @@ class ConsoleLessonBuilder:
         title = template["title_template"].format(theme=theme.title())
 
         # Цели урока
-        objectives = self._generate_objectives(theme, en_level, age_group)
+        objectives = self._generate_objectives(theme, age_group)
 
         # Словарный запас с детальной информацией
         vocabulary = self._get_vocabulary_with_details(theme, age_group)
@@ -981,8 +968,9 @@ class ConsoleLessonBuilder:
         )
 
     def _generate_objectives(
-        self, theme: str, level: EnglishLevel, age_group: AgeGroup
+        self, theme: str, age_group: AgeGroup
     ) -> List[str]:
+<<<<<<< HEAD
         """Генерирует образовательные цели на основе возраста и уровня"""
         age_key = age_group.value
         level_key = level.value
@@ -1617,6 +1605,17 @@ class ConsoleLessonBuilder:
                 "Поддерживать интерес учащихся"
             ]
         }
+=======
+        # Упрощенные цели без уровней
+        base_objectives = [
+            "Познакомиться с базовой лексикой по теме",
+            "Научиться произносить новые слова",
+            "Развить интерес к английскому через игры",
+            "Практиковать говорение в игровой форме"
+        ]
+        
+        return base_objectives
+>>>>>>> origin/NIKITA
 
     def _generate_vocabulary(self, theme: str, age_group: AgeGroup) -> List[str]:
         """Генерирует словарный запас с учетом возраста и темы"""
@@ -1653,6 +1652,7 @@ class ConsoleLessonBuilder:
         }
 
         words = vocabulary_bank.get(theme, [])
+<<<<<<< HEAD
         return words[:limit]
 
     def _get_vocabulary_with_details(self, theme: str, age_group: AgeGroup) -> List[dict]:
@@ -1751,9 +1751,14 @@ class ConsoleLessonBuilder:
                 })
         
         return words_details
+=======
+        # Ограничиваем количество слов по возрасту
+        word_limit = {"1-3": 3, "4-7": 5, "8-15": 8}
+        return words[: word_limit.get(age_group.value, 5)]
+>>>>>>> origin/NIKITA
 
     def _generate_activities(
-        self, theme: str, age_group: AgeGroup, level: EnglishLevel, duration: int
+        self, theme: str, age_group: AgeGroup, duration: int
     ) -> List[LessonActivity]:
         """Генерирует адаптивные активности для урока"""
         activities = []
@@ -1764,6 +1769,7 @@ class ConsoleLessonBuilder:
         warm_up = self._create_warm_up(age_group, warm_up_duration)
         activities.append(warm_up)
 
+<<<<<<< HEAD
         # Основная часть (оставшееся время минус время на завершение)
         wrap_up_duration = 5 if age_key in ["1-3", "3-6"] else 8 if age_key in ["6-9"] else 10
         main_duration = duration - warm_up_duration - wrap_up_duration
@@ -1771,6 +1777,12 @@ class ConsoleLessonBuilder:
         # Генерируем активности по фазам
         main_activities = self._create_adaptive_activities(
             theme, age_group, level, main_duration
+=======
+        # Основная часть (оставшееся время минус 5 минут на завершение)
+        main_duration = duration - 10
+        main_activities = self._create_main_activities(
+            theme, age_group, main_duration
+>>>>>>> origin/NIKITA
         )
         activities.extend(main_activities)
 
@@ -1866,8 +1878,13 @@ class ConsoleLessonBuilder:
                 ["Задать простые вопросы", "Выслушать ответы", "Поправить при необходимости"],
             )
 
+<<<<<<< HEAD
     def _create_adaptive_activities(
         self, theme: str, age_group: AgeGroup, level: EnglishLevel, duration: int
+=======
+    def _create_main_activities(
+        self, theme: str, age_group: AgeGroup, duration: int
+>>>>>>> origin/NIKITA
     ) -> List[LessonActivity]:
         """Создает адаптивные активности для основной части урока"""
         activities = []
