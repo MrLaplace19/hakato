@@ -1751,7 +1751,6 @@ class ConsoleLessonBuilder:
         warm_up = self._create_warm_up(age_group, warm_up_duration)
         activities.append(warm_up)
 
-<<<<<<< HEAD
         # Основная часть (оставшееся время минус время на завершение)
         wrap_up_duration = 5 if age_key in ["1-3", "3-6"] else 8 if age_key in ["6-9"] else 10
         main_duration = duration - warm_up_duration - wrap_up_duration
@@ -1759,12 +1758,6 @@ class ConsoleLessonBuilder:
         # Генерируем активности по фазам
         main_activities = self._create_adaptive_activities(
             theme, age_group, level, main_duration
-=======
-        # Основная часть (оставшееся время минус 5 минут на завершение)
-        main_duration = duration - 10
-        main_activities = self._create_main_activities(
-            theme, age_group, main_duration
->>>>>>> origin/NIKITA
         )
         activities.extend(main_activities)
 
@@ -1860,13 +1853,8 @@ class ConsoleLessonBuilder:
                 ["Задать простые вопросы", "Выслушать ответы", "Поправить при необходимости"],
             )
 
-<<<<<<< HEAD
     def _create_adaptive_activities(
         self, theme: str, age_group: AgeGroup, level: EnglishLevel, duration: int
-=======
-    def _create_main_activities(
-        self, theme: str, age_group: AgeGroup, duration: int
->>>>>>> origin/NIKITA
     ) -> List[LessonActivity]:
         """Создает адаптивные активности для основной части урока"""
         activities = []
