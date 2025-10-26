@@ -24,10 +24,22 @@ def main():
 
 if __name__ == "__main__":
     # Инициализация базы данных и создание тестового пользователя
-    persona = Person("admin", "admin123", 43, "Teacher")
+    from db_service import db_check_user_exists
+    
     db_create_words()
     db_insert_word_en("theme", "teme", "тема")
-    db_insert_users(persona)
+    
+    # Создаём тестового пользователя только если его ещё нет
+    if not db_check_user_exists("admin"):
+        persona = Person("admin", "admin123", 43, "учитель")
+        db_insert_users(persona)
+        print("✅ Тестовый пользователь создан: admin / admin123 (учитель)")
+    
+    # Создаём также тестового ученика для демонстрации
+    if not db_check_user_exists("student"):
+        persona_student = Person("student", "student123", 10, "ученик")
+        db_insert_users(persona_student)
+        print("✅ Тестовый ученик создан: student / student123")
     
     # Проверяем аргументы командной строки
     if len(sys.argv) > 1 and sys.argv[1] == "--gui":

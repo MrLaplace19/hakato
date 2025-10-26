@@ -1,8 +1,8 @@
 import tkinter as tk
 from tkinter import messagebox, scrolledtext, ttk
+import db_service
 
-# --- Хранилище пользователей ---
-users_db = {}
+# --- Хранилище текущего пользователя ---
 current_user = None
 
 
@@ -154,22 +154,31 @@ def Menu():
     center_frame = tk.Frame(root, bg="#f0f8ff")
     center_frame.pack(pady=30)
 
-    tk.Button(center_frame, text="🛠️ Конструктор занятий", font=("Arial", 16, "bold"),
-              bg="#FF9800", fg="white", width=25, height=2, command=Constructor).pack()
+    # Показываем кнопку конструктора только для учителей
+    if current_user and current_user.get("role") == "учитель":
+        tk.Button(center_frame, text="🛠️ Конструктор занятий", font=("Arial", 16, "bold"),
+                  bg="#FF9800", fg="white", width=25, height=2, command=Constructor).pack()
 
     tk.Label(root,
              text="Методика: One Person - One Language\nРазвиваем речь, восприятие, чтение, письмо",
              font=("Arial", 11), bg="#f0f8ff", fg="#555555", pady=15).pack()
 
-    username = current_user["login"] if current_user else "Пользователь"
-    tk.Label(root, text=f"© 2025 Полиглотики — Добро пожаловать, {username}!",
+    if current_user:
+        username = current_user.get("login", "Пользователь")
+        user_role = current_user.get("role", "")
+        role_text = f" ({user_role})" if user_role else ""
+    else:
+        username = "Пользователь"
+        role_text = ""
+    
+    tk.Label(root, text=f"© 2025 Полиглотики — Добро пожаловать, {username}{role_text}!",
              font=("Arial", 10), bg="#f0f8ff", fg="#777").pack(side="bottom", pady=10)
 
     root.mainloop()
 
 
 # --- Окно регистрации ---
-def show_register_window(login_win):
+def show_register_window(login_win, login_parent_entry=None):
     reg_win = tk.Toplevel()
     reg_win.title("Регистрация")
     reg_win.geometry("400x400")
@@ -208,17 +217,22 @@ def show_register_window(login_win):
         if not age_str.isdigit() or not (1 <= int(age_str) <= 120):
             messagebox.showwarning("Ошибка", "Введите корректный возраст.")
             return
-        if login in users_db:
+        
+        # Проверяем через БД
+        if db_service.db_check_user_exists(login):
             messagebox.showwarning("Ошибка", "Логин уже занят.")
             return
 
-        users_db[login] = {"login": login, "password": password, "age": int(age_str), "role": role}
-        current_user = users_db[login]
+        # Добавляем пользователя в БД
+        db_service.db_insert_user_simple(login, password, int(age_str), role)
 
-        messagebox.showinfo("Успех", "Вы успешно зарегистрированы!")
+        messagebox.showinfo("Успех", "Вы успешно зарегистрированы! Теперь войдите в систему.")
         reg_win.destroy()
-        login_win.destroy()
-        Menu()  # Открываем главное меню
+        
+        # Автозаполняем логин в окне входа
+        if login_parent_entry:
+            login_parent_entry.delete(0, tk.END)
+            login_parent_entry.insert(0, login)
 
     tk.Button(reg_win, text="Зарегистрироваться", font=("Arial", 12, "bold"), bg="#4CAF50", fg="white",
               command=submit).pack(pady=20)
@@ -250,11 +264,10 @@ def show_login_window():
             messagebox.showwarning("Ошибка", "Введите логин и пароль.")
             return
 
-        user = users_db.get(login)
-        if user and user["password"] == password:
-            current_user = user.copy()  # Создаем копию, чтобы не изменять оригинал
-            if "login" not in current_user:
-                current_user["login"] = login
+        # Получаем пользователя из БД
+        user = db_service.db_get_user(login, password)
+        if user:
+            current_user = user
             win.destroy()
             Menu()  # Переход в главное меню
         else:
@@ -266,7 +279,7 @@ def show_login_window():
     link = tk.Label(win, text="Нет аккаунта? Зарегистрироваться", font=("Arial", 10, "underline"),
                     bg="#f0f8ff", fg="#1e90ff", cursor="hand2")
     link.pack(pady=10)
-    link.bind("<Button-1>", lambda e: show_register_window(win))
+    link.bind("<Button-1>", lambda e: show_register_window(win, login_entry))
 
     win.mainloop()
 
