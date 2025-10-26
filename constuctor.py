@@ -40,21 +40,655 @@ class LessonPlan:
         self.age_group = age_group
         self.level = level
         self.duration = duration
+        self.tasks = self._generate_tasks()
+        self.vocabulary = self._generate_vocabulary()
+
+    def _generate_vocabulary(self):
+        """Генерирует словарь по теме"""
+        vocab_dict = {
+            "животные": {
+                "1-3": ["cat", "dog", "bird"],
+                "4-7": ["cat", "dog", "bird", "fish", "rabbit", "lion"],
+                "8-15": ["cat", "dog", "bird", "fish", "rabbit", "lion", "elephant", "tiger", "bear", "monkey"]
+            },
+            "цвета": {
+                "1-3": ["red", "blue", "yellow"],
+                "4-7": ["red", "blue", "yellow", "green", "orange", "purple"],
+                "8-15": ["red", "blue", "yellow", "green", "orange", "purple", "pink", "brown", "black", "white"]
+            },
+            "семья": {
+                "1-3": ["mom", "dad", "baby"],
+                "4-7": ["mom", "dad", "baby", "sister", "brother", "grandma"],
+                "8-15": ["mom", "dad", "baby", "sister", "brother", "grandma", "grandpa", "aunt", "uncle", "cousin"]
+            },
+            "еда": {
+                "1-3": ["apple", "banana", "milk"],
+                "4-7": ["apple", "banana", "milk", "bread", "juice", "cake"],
+                "8-15": ["apple", "banana", "milk", "bread", "juice", "cake", "pizza", "chicken", "rice", "soup"]
+            },
+            "одежда": {
+                "1-3": ["hat", "shoes", "dress"],
+                "4-7": ["hat", "shoes", "dress", "shirt", "pants", "socks"],
+                "8-15": ["hat", "shoes", "dress", "shirt", "pants", "socks", "jacket", "skirt", "tie", "gloves"]
+            },
+            "дом": {
+                "1-3": ["house", "bed", "table"],
+                "4-7": ["house", "bed", "table", "chair", "window", "door"],
+                "8-15": ["house", "bed", "table", "chair", "window", "door", "kitchen", "bathroom", "garden", "garage"]
+            },
+            "школа": {
+                "1-3": ["book", "pen", "bag"],
+                "4-7": ["book", "pen", "bag", "pencil", "ruler", "eraser"],
+                "8-15": ["book", "pen", "bag", "pencil", "ruler", "eraser", "notebook", "calculator", "computer", "desk"]
+            },
+            "хобби": {
+                "1-3": ["play", "sing", "draw"],
+                "4-7": ["play", "sing", "draw", "dance", "swim", "run"],
+                "8-15": ["play", "sing", "draw", "dance", "swim", "run", "read", "write", "cook", "travel"]
+            },
+            "части тела": {
+                "1-3": ["head", "eyes", "nose"],
+                "4-7": ["head", "eyes", "nose", "mouth", "hands", "feet"],
+                "8-15": ["head", "eyes", "nose", "mouth", "hands", "feet", "arms", "legs", "ears", "hair"]
+            },
+            "игрушки": {
+                "1-3": ["ball", "doll", "car"],
+                "4-7": ["ball", "doll", "car", "teddy", "blocks", "puzzle"],
+                "8-15": ["ball", "doll", "car", "teddy", "blocks", "puzzle", "robot", "game", "toy", "kite"]
+            }
+        }
+        return vocab_dict.get(self.theme, {}).get(self.age_group, [])
+
+    def _generate_tasks(self):
+        """Генерирует конкретные задания по теме и возрасту"""
+        tasks_dict = {
+            "животные": {
+                "1-3": [
+                    {
+                        "type": "Игра 'Звуки животных'",
+                        "description": "Покажите карточку с животным и произнесите звук",
+                        "example": "Покажите кошку → 'Meow-meow!'",
+                        "solution": "Дети повторяют звуки и показывают на карточки"
+                    },
+                    {
+                        "type": "Игра 'Найди животное'",
+                        "description": "Спрячьте карточки и попросите найти",
+                        "example": "Where is the cat? → Дети ищут карточку с кошкой",
+                        "solution": "Покажите карточку и скажите 'Here is the cat!'"
+                    }
+                ],
+                "4-7": [
+                    {
+                        "type": "Игра 'Животные и их дома'",
+                        "description": "Соедините животных с их домами",
+                        "example": "Dog lives in a house. Bird lives in a tree.",
+                        "solution": "Покажите картинки и объясните где живут животные"
+                    },
+                    {
+                        "type": "Песня 'Old MacDonald'",
+                        "description": "Спойте песню с животными",
+                        "example": "Old MacDonald had a farm, E-I-E-I-O!",
+                        "solution": "Дети поют и показывают движения животных"
+                    },
+                    {
+                        "type": "Игра 'Угадай животное'",
+                        "description": "Опишите животное, дети угадывают",
+                        "example": "It's big, it's gray, it has a trunk. What is it?",
+                        "solution": "It's an elephant!"
+                    }
+                ],
+                "8-15": [
+                    {
+                        "type": "Диалог 'В зоопарке'",
+                        "description": "Составьте диалог между посетителями зоопарка",
+                        "example": "A: Look! What's that? B: It's a lion. A: Is it dangerous?",
+                        "solution": "Предложите готовый диалог и попросите повторить"
+                    },
+                    {
+                        "type": "Проект 'Мое любимое животное'",
+                        "description": "Расскажите о своем любимом животном",
+                        "example": "My favorite animal is a dog because it's friendly.",
+                        "solution": "Помогите составить рассказ из 3-5 предложений"
+                    },
+                    {
+                        "type": "Игра 'Животные разных стран'",
+                        "description": "Назовите животных из разных стран",
+                        "example": "Kangaroo is from Australia. Panda is from China.",
+                        "solution": "Покажите карту мира и разместите животных по странам"
+                    }
+                ]
+            },
+            "цвета": {
+                "1-3": [
+                    {
+                        "type": "Игра 'Покажи цвет'",
+                        "description": "Покажите предмет определенного цвета",
+                        "example": "Show me something red!",
+                        "solution": "Дети показывают красные предметы в комнате"
+                    },
+                    {
+                        "type": "Раскраска",
+                        "description": "Раскрасьте картинку по инструкции",
+                        "example": "Color the apple red, color the sun yellow",
+                        "solution": "Проверьте правильность раскрашивания"
+                    }
+                ],
+                "4-7": [
+                    {
+                        "type": "Игра 'Цвета и предметы'",
+                        "description": "Назовите предметы определенного цвета",
+                        "example": "What is red? → Apple, rose, fire truck",
+                        "solution": "Составьте список предметов каждого цвета"
+                    },
+                    {
+                        "type": "Эксперимент 'Смешивание цветов'",
+                        "description": "Смешайте краски и назовите новый цвет",
+                        "example": "Red + Blue = Purple",
+                        "solution": "Покажите таблицу смешивания цветов"
+                    },
+                    {
+                        "type": "Песня 'Rainbow Song'",
+                        "description": "Спойте песню о радуге",
+                        "example": "Red and yellow and pink and green...",
+                        "solution": "Дети поют и показывают цвета руками"
+                    }
+                ],
+                "8-15": [
+                    {
+                        "type": "Описание картины",
+                        "description": "Опишите картину используя цвета",
+                        "example": "The sky is blue, the grass is green, the flowers are colorful",
+                        "solution": "Предложите шаблон описания с прилагательными"
+                    },
+                    {
+                        "type": "Игра 'Цветовые ассоциации'",
+                        "description": "Скажите с чем ассоциируется цвет",
+                        "example": "Red makes me think of love and fire",
+                        "solution": "Обсудите эмоциональные ассоциации цветов"
+                    },
+                    {
+                        "type": "Проект 'Цвета в природе'",
+                        "description": "Найдите цвета в природе и опишите их",
+                        "example": "Autumn leaves are orange and brown",
+                        "solution": "Создайте коллаж из природных материалов"
+                    }
+                ]
+            },
+            "семья": {
+                "1-3": [
+                    {
+                        "type": "Игра 'Покажи семью'",
+                        "description": "Покажите на картинке членов семьи",
+                        "example": "Where is mommy? Where is daddy?",
+                        "solution": "Дети показывают пальцем на картинки"
+                    },
+                    {
+                        "type": "Песня 'Family Finger Song'",
+                        "description": "Спойте песню про пальчики семьи",
+                        "example": "Daddy finger, daddy finger, where are you?",
+                        "solution": "Дети показывают пальцы и поют"
+                    }
+                ],
+                "4-7": [
+                    {
+                        "type": "Игра 'Семейное дерево'",
+                        "description": "Постройте семейное дерево",
+                        "example": "Grandma and Grandpa are at the top, Mom and Dad are below",
+                        "solution": "Покажите схему семейного дерева"
+                    },
+                    {
+                        "type": "Диалог 'Расскажи о семье'",
+                        "description": "Расскажите о своей семье",
+                        "example": "I have a mom, a dad, and a sister",
+                        "solution": "Помогите составить простое предложение"
+                    },
+                    {
+                        "type": "Игра 'Семейные роли'",
+                        "description": "Покажите кто что делает в семье",
+                        "example": "Mom cooks dinner. Dad drives the car.",
+                        "solution": "Обсудите обязанности каждого члена семьи"
+                    }
+                ],
+                "8-15": [
+                    {
+                        "type": "Интервью с семьей",
+                        "description": "Возьмите интервью у члена семьи",
+                        "example": "What's your favorite hobby? What do you like to do?",
+                        "solution": "Составьте список вопросов для интервью"
+                    },
+                    {
+                        "type": "Проект 'Семейная история'",
+                        "description": "Расскажите историю своей семьи",
+                        "example": "My family came from Russia. We moved here 5 years ago.",
+                        "solution": "Помогите составить рассказ о семейной истории"
+                    },
+                    {
+                        "type": "Дебаты 'Семейные традиции'",
+                        "description": "Обсудите важность семейных традиций",
+                        "example": "Family traditions help us stay connected",
+                        "solution": "Подготовьте аргументы за и против"
+                    }
+                ]
+            },
+            "еда": {
+                "1-3": [
+                    {
+                        "type": "Игра 'Вкусная еда'",
+                        "description": "Покажите карточки с едой и скажите вкусно",
+                        "example": "Show apple → 'Yummy!'",
+                        "solution": "Дети повторяют 'Yummy!' и показывают на карточки"
+                    },
+                    {
+                        "type": "Игра 'Кормление куклы'",
+                        "description": "Покормите куклу разной едой",
+                        "example": "Feed the doll an apple",
+                        "solution": "Дети берут карточки с едой и 'кормят' куклу"
+                    }
+                ],
+                "4-7": [
+                    {
+                        "type": "Игра 'Что я ем'",
+                        "description": "Опишите еду, дети угадывают",
+                        "example": "It's yellow, it's sweet, monkeys love it. What is it?",
+                        "solution": "It's a banana!"
+                    },
+                    {
+                        "type": "Песня 'Apples and Bananas'",
+                        "description": "Спойте песню про фрукты",
+                        "example": "I like to eat, eat, eat apples and bananas",
+                        "solution": "Дети поют и показывают движения"
+                    },
+                    {
+                        "type": "Игра 'Здоровое питание'",
+                        "description": "Разделите еду на здоровую и нездоровую",
+                        "example": "Apple is healthy. Candy is not healthy",
+                        "solution": "Создайте две корзины для сортировки"
+                    }
+                ],
+                "8-15": [
+                    {
+                        "type": "Диалог 'В ресторане'",
+                        "description": "Составьте диалог заказа еды",
+                        "example": "A: What would you like? B: I'd like pizza, please",
+                        "solution": "Предложите меню и фразы для заказа"
+                    },
+                    {
+                        "type": "Проект 'Мой любимый рецепт'",
+                        "description": "Расскажите о любимом блюде",
+                        "example": "My favorite food is pasta because it's delicious",
+                        "solution": "Помогите составить рецепт на английском"
+                    },
+                    {
+                        "type": "Дебаты 'Здоровое питание'",
+                        "description": "Обсудите важность здорового питания",
+                        "example": "Healthy food gives us energy",
+                        "solution": "Подготовьте аргументы за здоровое питание"
+                    }
+                ]
+            },
+            "одежда": {
+                "1-3": [
+                    {
+                        "type": "Игра 'Одень куклу'",
+                        "description": "Оденьте куклу в разную одежду",
+                        "example": "Put on the hat",
+                        "solution": "Дети одевают куклу по инструкции"
+                    },
+                    {
+                        "type": "Игра 'Покажи одежду'",
+                        "description": "Покажите на себе предметы одежды",
+                        "example": "Show me your shoes",
+                        "solution": "Дети показывают на свою одежду"
+                    }
+                ],
+                "4-7": [
+                    {
+                        "type": "Игра 'Одежда по сезонам'",
+                        "description": "Выберите одежду для разных сезонов",
+                        "example": "Winter: coat, hat, gloves. Summer: dress, shorts",
+                        "solution": "Создайте корзины для каждого сезона"
+                    },
+                    {
+                        "type": "Песня 'Put On Your Shoes'",
+                        "description": "Спойте песню про одевание",
+                        "example": "Put on your shoes, your shoes, your shoes",
+                        "solution": "Дети поют и показывают движения одевания"
+                    },
+                    {
+                        "type": "Игра 'Опиши одежду'",
+                        "description": "Опишите одежду по цвету и размеру",
+                        "example": "It's a big red shirt",
+                        "solution": "Дети угадывают предмет одежды"
+                    }
+                ],
+                "8-15": [
+                    {
+                        "type": "Диалог 'Покупка одежды'",
+                        "description": "Составьте диалог в магазине одежды",
+                        "example": "A: Can I help you? B: I'm looking for a blue shirt",
+                        "solution": "Предложите фразы для покупки одежды"
+                    },
+                    {
+                        "type": "Проект 'Модный показ'",
+                        "description": "Организуйте модный показ",
+                        "example": "This is my favorite outfit for school",
+                        "solution": "Помогите описать наряд на английском"
+                    },
+                    {
+                        "type": "Игра 'Одежда разных стран'",
+                        "description": "Расскажите о традиционной одежде",
+                        "example": "In Japan people wear kimonos",
+                        "solution": "Покажите картинки традиционной одежды"
+                    }
+                ]
+            },
+            "дом": {
+                "1-3": [
+                    {
+                        "type": "Игра 'Дом для куклы'",
+                        "description": "Постройте дом из кубиков",
+                        "example": "Put the bed in the bedroom",
+                        "solution": "Дети строят дом по инструкции"
+                    },
+                    {
+                        "type": "Игра 'Где что лежит'",
+                        "description": "Найдите предметы в доме",
+                        "example": "Where is the book? → In the bedroom",
+                        "solution": "Дети показывают на картинки комнат"
+                    }
+                ],
+                "4-7": [
+                    {
+                        "type": "Игра 'Комнаты дома'",
+                        "description": "Назовите комнаты и что в них",
+                        "example": "Kitchen: stove, fridge, table",
+                        "solution": "Создайте план дома с комнатами"
+                    },
+                    {
+                        "type": "Песня 'My House'",
+                        "description": "Спойте песню про дом",
+                        "example": "This is my house, this is my door",
+                        "solution": "Дети поют и показывают части дома"
+                    },
+                    {
+                        "type": "Игра 'Мебель и предметы'",
+                        "description": "Соедините предметы с комнатами",
+                        "example": "Bed goes in bedroom, stove goes in kitchen",
+                        "solution": "Создайте карточки для сортировки"
+                    }
+                ],
+                "8-15": [
+                    {
+                        "type": "Диалог 'Описание дома'",
+                        "description": "Опишите свой дом",
+                        "example": "My house has three bedrooms and a big kitchen",
+                        "solution": "Помогите составить описание дома"
+                    },
+                    {
+                        "type": "Проект 'Идеальный дом'",
+                        "description": "Спроектируйте идеальный дом",
+                        "example": "My dream house has a swimming pool",
+                        "solution": "Создайте план дома на английском"
+                    },
+                    {
+                        "type": "Игра 'Дома разных стран'",
+                        "description": "Сравните дома в разных странах",
+                        "example": "In England houses are made of brick",
+                        "solution": "Покажите картинки домов разных стран"
+                    }
+                ]
+            },
+            "школа": {
+                "1-3": [
+                    {
+                        "type": "Игра 'Школьные предметы'",
+                        "description": "Покажите школьные принадлежности",
+                        "example": "Show me the book",
+                        "solution": "Дети показывают на школьные предметы"
+                    },
+                    {
+                        "type": "Игра 'Собери портфель'",
+                        "description": "Соберите портфель для школы",
+                        "example": "Put the book in the bag",
+                        "solution": "Дети собирают портфель по инструкции"
+                    }
+                ],
+                "4-7": [
+                    {
+                        "type": "Игра 'Школьные предметы'",
+                        "description": "Назовите предметы и их назначение",
+                        "example": "We use pencil to write, we use ruler to measure",
+                        "solution": "Объясните назначение каждого предмета"
+                    },
+                    {
+                        "type": "Песня 'School Supplies Song'",
+                        "description": "Спойте песню про школьные принадлежности",
+                        "example": "I have a pencil, I have a pen",
+                        "solution": "Дети поют и показывают предметы"
+                    },
+                    {
+                        "type": "Игра 'Что в портфеле'",
+                        "description": "Опишите что лежит в портфеле",
+                        "example": "In my bag I have books, pencils, and an eraser",
+                        "solution": "Дети перечисляют предметы в портфеле"
+                    }
+                ],
+                "8-15": [
+                    {
+                        "type": "Диалог 'В школе'",
+                        "description": "Составьте диалог между учениками",
+                        "example": "A: Can I borrow your pen? B: Sure, here you are",
+                        "solution": "Предложите фразы для общения в школе"
+                    },
+                    {
+                        "type": "Проект 'Мой школьный день'",
+                        "description": "Расскажите о своем школьном дне",
+                        "example": "I go to school at 8 o'clock",
+                        "solution": "Помогите составить расписание дня"
+                    },
+                    {
+                        "type": "Игра 'Школы разных стран'",
+                        "description": "Сравните школы в разных странах",
+                        "example": "In Japan students clean their classrooms",
+                        "solution": "Покажите особенности школ разных стран"
+                    }
+                ]
+            },
+            "хобби": {
+                "1-3": [
+                    {
+                        "type": "Игра 'Что я люблю делать'",
+                        "description": "Покажите любимые занятия",
+                        "example": "I like to play",
+                        "solution": "Дети показывают движения игр"
+                    },
+                    {
+                        "type": "Игра 'Песни и танцы'",
+                        "description": "Спойте и станцуйте",
+                        "example": "Let's sing and dance together",
+                        "solution": "Дети поют и танцуют под музыку"
+                    }
+                ],
+                "4-7": [
+                    {
+                        "type": "Игра 'Мои хобби'",
+                        "description": "Расскажите о своих увлечениях",
+                        "example": "I like to draw pictures",
+                        "solution": "Дети рисуют и рассказывают о рисунке"
+                    },
+                    {
+                        "type": "Песня 'Hobbies Song'",
+                        "description": "Спойте песню про хобби",
+                        "example": "I like to read, I like to play",
+                        "solution": "Дети поют и показывают свои хобби"
+                    },
+                    {
+                        "type": "Игра 'Угадай хобби'",
+                        "description": "Опишите хобби, дети угадывают",
+                        "example": "I use brushes and paint. What is my hobby?",
+                        "solution": "It's painting!"
+                    }
+                ],
+                "8-15": [
+                    {
+                        "type": "Диалог 'О хобби'",
+                        "description": "Обсудите хобби с друзьями",
+                        "example": "A: What's your hobby? B: I like playing football",
+                        "solution": "Предложите фразы для обсуждения хобби"
+                    },
+                    {
+                        "type": "Проект 'Мое хобби'",
+                        "description": "Создайте презентацию о своем хобби",
+                        "example": "My hobby is photography. I take pictures of nature",
+                        "solution": "Помогите составить презентацию на английском"
+                    },
+                    {
+                        "type": "Игра 'Хобби знаменитостей'",
+                        "description": "Расскажите о хобби известных людей",
+                        "example": "Einstein liked playing violin",
+                        "solution": "Покажите интересные факты о хобби знаменитостей"
+                    }
+                ]
+            },
+            "части тела": {
+                "1-3": [
+                    {
+                        "type": "Игра 'Покажи части тела'",
+                        "description": "Покажите на себе части тела",
+                        "example": "Show me your nose",
+                        "solution": "Дети показывают на свои части тела"
+                    },
+                    {
+                        "type": "Песня 'Head, Shoulders, Knees and Toes'",
+                        "description": "Спойте песню про части тела",
+                        "example": "Head, shoulders, knees and toes",
+                        "solution": "Дети поют и показывают на части тела"
+                    }
+                ],
+                "4-7": [
+                    {
+                        "type": "Игра 'Одень куклу'",
+                        "description": "Оденьте куклу и назовите части тела",
+                        "example": "Put shoes on feet, hat on head",
+                        "solution": "Дети одевают куклу и называют части тела"
+                    },
+                    {
+                        "type": "Игра 'Угадай часть тела'",
+                        "description": "Опишите часть тела, дети угадывают",
+                        "example": "We use it to smell. What is it?",
+                        "solution": "It's a nose!"
+                    }
+                ],
+                "8-15": [
+                    {
+                        "type": "Диалог 'У врача'",
+                        "description": "Составьте диалог с врачом",
+                        "example": "A: What's wrong? B: My head hurts",
+                        "solution": "Предложите фразы для описания боли"
+                    },
+                    {
+                        "type": "Проект 'Человеческое тело'",
+                        "description": "Опишите функции частей тела",
+                        "example": "The heart pumps blood through the body",
+                        "solution": "Помогите составить описание функций органов"
+                    }
+                ]
+            },
+            "игрушки": {
+                "1-3": [
+                    {
+                        "type": "Игра 'Мои игрушки'",
+                        "description": "Покажите любимые игрушки",
+                        "example": "This is my teddy bear",
+                        "solution": "Дети приносят игрушки и показывают их"
+                    },
+                    {
+                        "type": "Игра 'Спрячь игрушку'",
+                        "description": "Спрячьте игрушку и попросите найти",
+                        "example": "Where is the ball?",
+                        "solution": "Дети ищут спрятанную игрушку"
+                    }
+                ],
+                "4-7": [
+                    {
+                        "type": "Игра 'Опиши игрушку'",
+                        "description": "Опишите игрушку по цвету и размеру",
+                        "example": "It's a big red car",
+                        "solution": "Дети угадывают игрушку по описанию"
+                    },
+                    {
+                        "type": "Песня 'Toys Song'",
+                        "description": "Спойте песню про игрушки",
+                        "example": "I have a ball, I have a doll",
+                        "solution": "Дети поют и показывают свои игрушки"
+                    }
+                ],
+                "8-15": [
+                    {
+                        "type": "Диалог 'В магазине игрушек'",
+                        "description": "Составьте диалог покупки игрушки",
+                        "example": "A: How much is this toy? B: It's 20 dollars",
+                        "solution": "Предложите фразы для покупки"
+                    },
+                    {
+                        "type": "Проект 'Моя любимая игрушка'",
+                        "description": "Расскажите о любимой игрушке",
+                        "example": "My favorite toy is a robot because it can move",
+                        "solution": "Помогите составить рассказ об игрушке"
+                    }
+                ]
+            }
+        }
+        
+        # Получаем задания для конкретной темы и возраста
+        theme_tasks = tasks_dict.get(self.theme, {})
+        age_tasks = theme_tasks.get(self.age_group, [])
+        
+        # Если нет заданий для конкретного возраста, берем ближайший
+        if not age_tasks:
+            if self.age_group == "1-3":
+                age_tasks = theme_tasks.get("4-7", [])
+            elif self.age_group == "4-7":
+                age_tasks = theme_tasks.get("8-15", [])
+            else:
+                age_tasks = theme_tasks.get("4-7", [])
+        
+        return age_tasks[:3]  # Возвращаем максимум 3 задания
 
     def get_lesson_plan(self):
         phases = {
-            45: ["Разминка (5 мин)", "Изучение лексики (15 мин)", "Игра (10 мин)", "Практика (10 мин)", "Завершение (5 мин)"],
-            60: ["Разминка (10 мин)", "Изучение лексики (20 мин)", "Игра (10 мин)", "Практика (15 мин)", "Завершение (5 мин)"]
+            30: ["Разминка (3 мин)", "Изучение лексики (12 мин)", "Задания (10 мин)", "Завершение (5 мин)"],
+            45: ["Разминка (5 мин)", "Изучение лексики (15 мин)", "Задания (20 мин)", "Завершение (5 мин)"],
+            60: ["Разминка (10 мин)", "Изучение лексики (20 мин)", "Задания (25 мин)", "Завершение (5 мин)"],
+            90: ["Разминка (10 мин)", "Изучение лексики (25 мин)", "Задания (45 мин)", "Завершение (10 мин)"]
         }
+        
         plan = f"🎓 ПЛАН УРОКА\n"
         plan += f"Тема: {self.theme.title()}\n"
         plan += f"Возраст: {self.age_group}\n"
-        plan += f"Уровень: {self.level.upper()}\n"
         plan += f"Длительность: {self.duration} минут\n"
-        plan += f"\nФАЗЫ УРОКА:\n"
+        
+        plan += f"\n📚 СЛОВАРЬ ({len(self.vocabulary)} слов):\n"
+        for word in self.vocabulary:
+            plan += f"• {word}\n"
+        
+        plan += f"\n⏰ ФАЗЫ УРОКА:\n"
         for phase in phases.get(self.duration, phases[45]):
             plan += f"• {phase}\n"
-        plan += f"\nМатериалы: карточки, аудио, раскраски по теме '{self.theme}'\n"
+        
+        plan += f"\n🎯 КОНКРЕТНЫЕ ЗАДАНИЯ:\n"
+        for i, task in enumerate(self.tasks, 1):
+            plan += f"\n{i}. {task['type']}\n"
+            plan += f"   📝 Описание: {task['description']}\n"
+            plan += f"   💡 Пример: {task['example']}\n"
+            plan += f"   ✅ Решение: {task['solution']}\n"
+        
+        plan += f"\n📦 МАТЕРИАЛЫ:\n"
+        plan += f"• Карточки со словами по теме '{self.theme}'\n"
+        plan += f"• Раскраски и рабочие листы\n"
+        plan += f"• Аудиозаписи и песни\n"
+        plan += f"• Игрушки и предметы для демонстрации\n"
+        
         return plan
 
 
