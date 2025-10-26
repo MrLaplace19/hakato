@@ -184,7 +184,9 @@ class ConsoleLessonBuilder:
         while True:
             lesson = self._create_lesson_interactive()
             if lesson:
-                lesson.display()
+                print("\n" + "="*50)
+                print(lesson.get_lesson_plan())
+                print("="*50)
                 
                 save = input("\n💾 Сохранить этот урок? (д/н): ").lower()
                 if save == 'д':

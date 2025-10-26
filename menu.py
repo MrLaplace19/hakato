@@ -1,90 +1,94 @@
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import ttk, messagebox, scrolledtext
+from base_c import ConsoleLessonBuilder, AgeGroup, EnglishLevel
 
-def show_kindergarten_activities():
-    messagebox.showinfo("Игровые занятия", "Выбраны игровые занятия для дошкольников 3-7 лет. В программе: пение, танцы, рисование и творчество на иностранном языке.")
-
-def show_school_clubs():
-    messagebox.showinfo("Клубы для школьников", "Выбраны языковые клубы для школьников 1-6 классов. Программа включает изучение английского с использованием методики, учитывающей фонетические и грамматические особенности языков.")
-
-def show_learning_materials():
-    messagebox.showinfo("Учебные материалы", "Переход к записям учебных материалов. На платформе Полиглотики ваш ребенок может изучать иностранные языки с помощью уникальной методики, позволяющей овладеть языком за 3-6 месяцев.")
 
 def Menu():
-    # Создание главного окна
     root = tk.Tk()
-    root.title("Меню Полиглотики")
-    root.geometry("700x500")
+    root.title("Конструктор уроков английского")
+    root.geometry("800x700")
     root.configure(bg="#f0f8ff")
 
-    # Заголовок проекта
-    header = tk.Label(root, text="ПОЛИГЛОТИКИ", font=("Arial", 28, "bold"), bg="#4169e1", fg="white", pady=20)
+    # Заголовок
+    header = tk.Label(root, text="🎓 Конструктор уроков", font=("Arial", 24, "bold"), 
+                     bg="#4169e1", fg="white", pady=15)
     header.pack(fill="x")
+
+    # Основной фрейм
+    main_frame = tk.Frame(root, bg="#f0f8ff", padx=20, pady=20)
+    main_frame.pack(fill="both", expand=True)
+
+    # Тема
+    tk.Label(main_frame, text="Тема урока:", font=("Arial", 12), bg="#f0f8ff").grid(row=0, column=0, sticky="w", pady=10)
+    theme_var = tk.StringVar(value="животные")
+    theme_combo = ttk.Combobox(main_frame, textvariable=theme_var, width=30, 
+                               values=["животные", "цвета", "еда", "семья", "одежда", "дом", "школа", "хобби"])
+    theme_combo.grid(row=0, column=1, pady=10, padx=10)
+
+    # Возрастная группа
+    tk.Label(main_frame, text="Возраст:", font=("Arial", 12), bg="#f0f8ff").grid(row=1, column=0, sticky="w", pady=10)
+    age_var = tk.StringVar(value="3-6")
+    age_combo = ttk.Combobox(main_frame, textvariable=age_var, width=30,
+                             values=["1-3", "3-6", "6-9", "9-12", "12-15"])
+    age_combo.grid(row=1, column=1, pady=10, padx=10)
+
+    # Уровень английского
+    tk.Label(main_frame, text="Уровень:", font=("Arial", 12), bg="#f0f8ff").grid(row=2, column=0, sticky="w", pady=10)
+    level_var = tk.StringVar(value="beginner")
+    level_combo = ttk.Combobox(main_frame, textvariable=level_var, width=30,
+                               values=["beginner", "elementary", "intermediate", "upper-intermediate"])
+    level_combo.grid(row=2, column=1, pady=10, padx=10)
+
+    # Длительность
+    tk.Label(main_frame, text="Длительность (мин):", font=("Arial", 12), bg="#f0f8ff").grid(row=3, column=0, sticky="w", pady=10)
+    duration_var = tk.StringVar(value="45")
+    duration_entry = tk.Entry(main_frame, textvariable=duration_var, width=32)
+    duration_entry.grid(row=3, column=1, pady=10, padx=10)
+
+    # Кнопка создания
+    create_btn = tk.Button(main_frame, text="Создать урок", font=("Arial", 14, "bold"),
+                          bg="#4CAF50", fg="white", width=25, height=2,
+                          command=lambda: create_lesson())
+    create_btn.grid(row=4, column=0, columnspan=2, pady=20)
+
+    # Область вывода результата
+    tk.Label(main_frame, text="План урока:", font=("Arial", 12, "bold"), bg="#f0f8ff").grid(row=5, column=0, columnspan=2, sticky="w", pady=10)
     
-    subtitle = tk.Label(root, text="Детский языковой центр", font=("Arial", 16), bg="#f0f8ff", fg="#4169e1", pady=10)
-    subtitle.pack()
+    output_text = scrolledtext.ScrolledText(main_frame, width=70, height=20, font=("Courier", 10))
+    output_text.grid(row=6, column=0, columnspan=2, pady=10)
 
-    # Описание
-    description = tk.Label(root, 
-                          text="Комплексное развитие: пение, танцы, рисование, творчество\nЗадания на внимание, память, логику и мышление",
-                          font=("Arial", 12), 
-                          bg="#f0f8ff", 
-                          fg="#333333",
-                          pady=15,
-                          wraplength=600)
-    description.pack()
+    def create_lesson():
+        try:
+            # Получаем параметры
+            theme = theme_var.get()
+            age_str = age_var.get()
+            level_str = level_var.get()
+            duration = int(duration_var.get())
 
-    # Фрейм для первых двух кнопок
-    buttons_frame = tk.Frame(root, bg="#f0f8ff")
-    buttons_frame.pack(pady=30)
+            # Конвертируем в enum
+            age_map = {"1-3": AgeGroup.TODDLERS, "3-6": AgeGroup.PRESCHOOL, 
+                      "6-9": AgeGroup.EARLY_SCHOOL, "9-12": AgeGroup.MID_SCHOOL, 
+                      "12-15": AgeGroup.TEENS}
+            level_map = {"beginner": EnglishLevel.BEGINNER, "elementary": EnglishLevel.ELEMENTARY,
+                        "intermediate": EnglishLevel.INTERMEDIATE, "upper-intermediate": EnglishLevel.UPPER_INTERMEDIATE}
 
-    # Кнопки для дошкольников и школьников в одной строке
-    kindergarten_button = tk.Button(buttons_frame, 
-                                  text="Игровые занятия\nдля дошкольников", 
-                                  font=("Arial", 14, "bold"),
-                                  bg="#09d810", 
-                                  fg="black", 
-                                  width=20, 
-                                  height=3,
-                                  command=show_kindergarten_activities,
-                                  relief="raised",
-                                  borderwidth=3)
-    kindergarten_button.grid(row=0, column=0, padx=20)
+            age_group = age_map[age_str]
+            en_level = level_map[level_str]
 
-    school_button = tk.Button(buttons_frame, 
-                             text="Клубы\nдля школьников", 
-                             font=("Arial", 14, "bold"),
-                             bg="#0a8fe2", 
-                             fg="black", 
-                             width=20, 
-                             height=3,
-                             command=show_school_clubs,
-                             relief="raised",
-                             borderwidth=3)
-    school_button.grid(row=0, column=1, padx=20)
+            # Создаем урок
+            builder = ConsoleLessonBuilder()
+            lesson = builder._generate_lesson(theme, age_group, en_level, duration)
 
-    # Кнопка для учебных материалов
-    materials_button = tk.Button(root, 
-                               text="Запись учебных материалов", 
-                               font=("Arial", 14, "bold"),
-                               bg="#CB1212", 
-                               fg="black", 
-                               width=30, 
-                               height=2,
-                               command=show_learning_materials,
-                               relief="raised",
-                               borderwidth=3)
-    materials_button.pack(pady=20)
+            # Выводим результат
+            output_text.delete("1.0", tk.END)
+            output_text.insert("1.0", lesson.get_lesson_plan())
 
-    # Информация о методике
-    method_info = tk.Label(root, 
-                          text="Мы используем методику 'One Person - One Language'\nи комплексный подход в изучении языка: речь, восприятие на слух, чтение и письмо",
-                          font=("Arial", 11), 
-                          bg="#f0f8ff", 
-                          fg="#555555",
-                          pady=10,
-                          wraplength=600)
-    method_info.pack()
+            # Показываем сообщение об успехе
+            messagebox.showinfo("Успех", "Урок создан успешно!")
+            
+        except ValueError as e:
+            messagebox.showerror("Ошибка", f"Неверное значение: {e}")
+        except Exception as e:
+            messagebox.showerror("Ошибка", f"Произошла ошибка: {e}")
 
-    # Запуск приложения
     root.mainloop()

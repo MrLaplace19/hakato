@@ -1,0 +1,8 @@
+# Минимальные зависимости для работы консольной версии
+# Python 3.12+ требуется по pyproject.toml
+
+# Для GUI версии требуется установить tkinter системно:
+# Ubuntu/Debian: sudo apt-get install python3-tk
+# Arch Linux: sudo pacman -S tk
+# macOS: tkinter обычно входит в стандартную поставку Python
+
