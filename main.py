@@ -1,5 +1,5 @@
 from base_c import *
-import json
+from menu import menu
 
 
 def main():
@@ -11,4 +11,5 @@ def main():
 
 
 if __name__ == "__main__":
+    menu()
     main()
