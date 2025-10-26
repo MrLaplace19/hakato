@@ -10,8 +10,14 @@ def Menu():
     root.configure(bg="#f0f8ff")
 
     # Заголовок
-    header = tk.Label(root, text="🎓 Конструктор уроков", font=("Arial", 24, "bold"), 
-                     bg="#4169e1", fg="white", pady=15)
+    header = tk.Label(
+        root,
+        text="🎓 Конструктор уроков",
+        font=("Arial", 24, "bold"),
+        bg="#4169e1",
+        fg="white",
+        pady=15,
+    )
     header.pack(fill="x")
 
     # Основной фрейм
@@ -19,42 +25,73 @@ def Menu():
     main_frame.pack(fill="both", expand=True)
 
     # Тема
-    tk.Label(main_frame, text="Тема урока:", font=("Arial", 12), bg="#f0f8ff").grid(row=0, column=0, sticky="w", pady=10)
+    tk.Label(main_frame, text="Тема урока:", font=("Arial", 12), bg="#f0f8ff").grid(
+        row=0, column=0, sticky="w", pady=10
+    )
     theme_var = tk.StringVar(value="животные")
-    theme_combo = ttk.Combobox(main_frame, textvariable=theme_var, width=30, 
-                               values=["животные", "цвета", "еда", "семья", "одежда", "дом", "школа", "хобби"])
+    theme_combo = ttk.Combobox(
+        main_frame,
+        textvariable=theme_var,
+        width=30,
+        values=["животные", "цвета", "еда", "семья", "одежда", "дом", "школа", "хобби"],
+    )
     theme_combo.grid(row=0, column=1, pady=10, padx=10)
 
     # Возрастная группа
-    tk.Label(main_frame, text="Возраст:", font=("Arial", 12), bg="#f0f8ff").grid(row=1, column=0, sticky="w", pady=10)
+    tk.Label(main_frame, text="Возраст:", font=("Arial", 12), bg="#f0f8ff").grid(
+        row=1, column=0, sticky="w", pady=10
+    )
     age_var = tk.StringVar(value="3-6")
-    age_combo = ttk.Combobox(main_frame, textvariable=age_var, width=30,
-                             values=["1-3", "3-6", "6-9", "9-12", "12-15"])
+    age_combo = ttk.Combobox(
+        main_frame,
+        textvariable=age_var,
+        width=30,
+        values=["1-3", "3-6", "6-9", "9-12", "12-15"],
+    )
     age_combo.grid(row=1, column=1, pady=10, padx=10)
 
     # Уровень английского
-    tk.Label(main_frame, text="Уровень:", font=("Arial", 12), bg="#f0f8ff").grid(row=2, column=0, sticky="w", pady=10)
+    tk.Label(main_frame, text="Уровень:", font=("Arial", 12), bg="#f0f8ff").grid(
+        row=2, column=0, sticky="w", pady=10
+    )
     level_var = tk.StringVar(value="beginner")
-    level_combo = ttk.Combobox(main_frame, textvariable=level_var, width=30,
-                               values=["beginner", "elementary", "intermediate", "upper-intermediate"])
+    level_combo = ttk.Combobox(
+        main_frame,
+        textvariable=level_var,
+        width=30,
+        values=["beginner", "elementary", "intermediate", "upper-intermediate"],
+    )
     level_combo.grid(row=2, column=1, pady=10, padx=10)
 
     # Длительность
-    tk.Label(main_frame, text="Длительность (мин):", font=("Arial", 12), bg="#f0f8ff").grid(row=3, column=0, sticky="w", pady=10)
+    tk.Label(
+        main_frame, text="Длительность (мин):", font=("Arial", 12), bg="#f0f8ff"
+    ).grid(row=3, column=0, sticky="w", pady=10)
     duration_var = tk.StringVar(value="45")
     duration_entry = tk.Entry(main_frame, textvariable=duration_var, width=32)
     duration_entry.grid(row=3, column=1, pady=10, padx=10)
 
     # Кнопка создания
-    create_btn = tk.Button(main_frame, text="Создать урок", font=("Arial", 14, "bold"),
-                          bg="#4CAF50", fg="white", width=25, height=2,
-                          command=lambda: create_lesson())
+    create_btn = tk.Button(
+        main_frame,
+        text="Создать урок",
+        font=("Arial", 14, "bold"),
+        bg="#4CAF50",
+        fg="white",
+        width=25,
+        height=2,
+        command=lambda: create_lesson(),
+    )
     create_btn.grid(row=4, column=0, columnspan=2, pady=20)
 
     # Область вывода результата
-    tk.Label(main_frame, text="План урока:", font=("Arial", 12, "bold"), bg="#f0f8ff").grid(row=5, column=0, columnspan=2, sticky="w", pady=10)
-    
-    output_text = scrolledtext.ScrolledText(main_frame, width=70, height=20, font=("Courier", 10))
+    tk.Label(
+        main_frame, text="План урока:", font=("Arial", 12, "bold"), bg="#f0f8ff"
+    ).grid(row=5, column=0, columnspan=2, sticky="w", pady=10)
+
+    output_text = scrolledtext.ScrolledText(
+        main_frame, width=70, height=20, font=("Courier", 10)
+    )
     output_text.grid(row=6, column=0, columnspan=2, pady=10)
 
     def create_lesson():
@@ -66,11 +103,19 @@ def Menu():
             duration = int(duration_var.get())
 
             # Конвертируем в enum
-            age_map = {"1-3": AgeGroup.TODDLERS, "3-6": AgeGroup.PRESCHOOL, 
-                      "6-9": AgeGroup.EARLY_SCHOOL, "9-12": AgeGroup.MID_SCHOOL, 
-                      "12-15": AgeGroup.TEENS}
-            level_map = {"beginner": EnglishLevel.BEGINNER, "elementary": EnglishLevel.ELEMENTARY,
-                        "intermediate": EnglishLevel.INTERMEDIATE, "upper-intermediate": EnglishLevel.UPPER_INTERMEDIATE}
+            age_map = {
+                "1-3": AgeGroup.TODDLERS,
+                "3-6": AgeGroup.PRESCHOOL,
+                "6-9": AgeGroup.EARLY_SCHOOL,
+                "9-12": AgeGroup.MID_SCHOOL,
+                "12-15": AgeGroup.TEENS,
+            }
+            level_map = {
+                "beginner": EnglishLevel.BEGINNER,
+                "elementary": EnglishLevel.ELEMENTARY,
+                "intermediate": EnglishLevel.INTERMEDIATE,
+                "upper-intermediate": EnglishLevel.UPPER_INTERMEDIATE,
+            }
 
             age_group = age_map[age_str]
             en_level = level_map[level_str]
@@ -85,7 +130,7 @@ def Menu():
 
             # Показываем сообщение об успехе
             messagebox.showinfo("Успех", "Урок создан успешно!")
-            
+
         except ValueError as e:
             messagebox.showerror("Ошибка", f"Неверное значение: {e}")
         except Exception as e:
