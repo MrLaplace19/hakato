@@ -40,57 +40,713 @@ class LessonPlan:
         self.age_group = age_group
         self.level = level
         self.duration = duration
+        self.tasks = self._generate_tasks()
+        self.vocabulary = self._generate_vocabulary()
+
+    def _generate_vocabulary(self):
+        """Генерирует словарь по теме"""
+        vocab_dict = {
+            "животные": {
+                "1-3": ["cat", "dog", "bird"],
+                "4-7": ["cat", "dog", "bird", "fish", "rabbit", "lion"],
+                "8-15": ["cat", "dog", "bird", "fish", "rabbit", "lion", "elephant", "tiger", "bear", "monkey"]
+            },
+            "цвета": {
+                "1-3": ["red", "blue", "yellow"],
+                "4-7": ["red", "blue", "yellow", "green", "orange", "purple"],
+                "8-15": ["red", "blue", "yellow", "green", "orange", "purple", "pink", "brown", "black", "white"]
+            },
+            "семья": {
+                "1-3": ["mom", "dad", "baby"],
+                "4-7": ["mom", "dad", "baby", "sister", "brother", "grandma"],
+                "8-15": ["mom", "dad", "baby", "sister", "brother", "grandma", "grandpa", "aunt", "uncle", "cousin"]
+            },
+            "еда": {
+                "1-3": ["apple", "banana", "milk"],
+                "4-7": ["apple", "banana", "milk", "bread", "juice", "cake"],
+                "8-15": ["apple", "banana", "milk", "bread", "juice", "cake", "pizza", "chicken", "rice", "soup"]
+            },
+            "одежда": {
+                "1-3": ["hat", "shoes", "dress"],
+                "4-7": ["hat", "shoes", "dress", "shirt", "pants", "socks"],
+                "8-15": ["hat", "shoes", "dress", "shirt", "pants", "socks", "jacket", "skirt", "tie", "gloves"]
+            },
+            "дом": {
+                "1-3": ["house", "bed", "table"],
+                "4-7": ["house", "bed", "table", "chair", "window", "door"],
+                "8-15": ["house", "bed", "table", "chair", "window", "door", "kitchen", "bathroom", "garden", "garage"]
+            },
+            "школа": {
+                "1-3": ["book", "pen", "bag"],
+                "4-7": ["book", "pen", "bag", "pencil", "ruler", "eraser"],
+                "8-15": ["book", "pen", "bag", "pencil", "ruler", "eraser", "notebook", "calculator", "computer", "desk"]
+            },
+            "хобби": {
+                "1-3": ["play", "sing", "draw"],
+                "4-7": ["play", "sing", "draw", "dance", "swim", "run"],
+                "8-15": ["play", "sing", "draw", "dance", "swim", "run", "read", "write", "cook", "travel"]
+            },
+            "части тела": {
+                "1-3": ["head", "eyes", "nose"],
+                "4-7": ["head", "eyes", "nose", "mouth", "hands", "feet"],
+                "8-15": ["head", "eyes", "nose", "mouth", "hands", "feet", "arms", "legs", "ears", "hair"]
+            },
+            "игрушки": {
+                "1-3": ["ball", "doll", "car"],
+                "4-7": ["ball", "doll", "car", "teddy", "blocks", "puzzle"],
+                "8-15": ["ball", "doll", "car", "teddy", "blocks", "puzzle", "robot", "game", "toy", "kite"]
+            }
+        }
+        return vocab_dict.get(self.theme, {}).get(self.age_group, [])
+
+    def _generate_tasks(self):
+        """Генерирует конкретные задания по теме и возрасту"""
+        tasks_dict = {
+            "животные": {
+                "1-3": [
+                    {
+                        "type": "Игра 'Звуки животных'",
+                        "description": "Покажите карточку с животным и произнесите звук",
+                        "example": "Покажите кошку → 'Meow-meow!'",
+                        "solution": "Дети повторяют звуки и показывают на карточки"
+                    },
+                    {
+                        "type": "Игра 'Найди животное'",
+                        "description": "Спрячьте карточки и попросите найти",
+                        "example": "Where is the cat? → Дети ищут карточку с кошкой",
+                        "solution": "Покажите карточку и скажите 'Here is the cat!'"
+                    }
+                ],
+                "4-7": [
+                    {
+                        "type": "Игра 'Животные и их дома'",
+                        "description": "Соедините животных с их домами",
+                        "example": "Dog lives in a house. Bird lives in a tree.",
+                        "solution": "Покажите картинки и объясните где живут животные"
+                    },
+                    {
+                        "type": "Песня 'Old MacDonald'",
+                        "description": "Спойте песню с животными",
+                        "example": "Old MacDonald had a farm, E-I-E-I-O!",
+                        "solution": "Дети поют и показывают движения животных"
+                    },
+                    {
+                        "type": "Игра 'Угадай животное'",
+                        "description": "Опишите животное, дети угадывают",
+                        "example": "It's big, it's gray, it has a trunk. What is it?",
+                        "solution": "It's an elephant!"
+                    }
+                ],
+                "8-15": [
+                    {
+                        "type": "Диалог 'В зоопарке'",
+                        "description": "Составьте диалог между посетителями зоопарка",
+                        "example": "A: Look! What's that? B: It's a lion. A: Is it dangerous?",
+                        "solution": "Предложите готовый диалог и попросите повторить"
+                    },
+                    {
+                        "type": "Проект 'Мое любимое животное'",
+                        "description": "Расскажите о своем любимом животном",
+                        "example": "My favorite animal is a dog because it's friendly.",
+                        "solution": "Помогите составить рассказ из 3-5 предложений"
+                    },
+                    {
+                        "type": "Игра 'Животные разных стран'",
+                        "description": "Назовите животных из разных стран",
+                        "example": "Kangaroo is from Australia. Panda is from China.",
+                        "solution": "Покажите карту мира и разместите животных по странам"
+                    }
+                ]
+            },
+            "цвета": {
+                "1-3": [
+                    {
+                        "type": "Игра 'Покажи цвет'",
+                        "description": "Покажите предмет определенного цвета",
+                        "example": "Show me something red!",
+                        "solution": "Дети показывают красные предметы в комнате"
+                    },
+                    {
+                        "type": "Раскраска",
+                        "description": "Раскрасьте картинку по инструкции",
+                        "example": "Color the apple red, color the sun yellow",
+                        "solution": "Проверьте правильность раскрашивания"
+                    }
+                ],
+                "4-7": [
+                    {
+                        "type": "Игра 'Цвета и предметы'",
+                        "description": "Назовите предметы определенного цвета",
+                        "example": "What is red? → Apple, rose, fire truck",
+                        "solution": "Составьте список предметов каждого цвета"
+                    },
+                    {
+                        "type": "Эксперимент 'Смешивание цветов'",
+                        "description": "Смешайте краски и назовите новый цвет",
+                        "example": "Red + Blue = Purple",
+                        "solution": "Покажите таблицу смешивания цветов"
+                    },
+                    {
+                        "type": "Песня 'Rainbow Song'",
+                        "description": "Спойте песню о радуге",
+                        "example": "Red and yellow and pink and green...",
+                        "solution": "Дети поют и показывают цвета руками"
+                    }
+                ],
+                "8-15": [
+                    {
+                        "type": "Описание картины",
+                        "description": "Опишите картину используя цвета",
+                        "example": "The sky is blue, the grass is green, the flowers are colorful",
+                        "solution": "Предложите шаблон описания с прилагательными"
+                    },
+                    {
+                        "type": "Игра 'Цветовые ассоциации'",
+                        "description": "Скажите с чем ассоциируется цвет",
+                        "example": "Red makes me think of love and fire",
+                        "solution": "Обсудите эмоциональные ассоциации цветов"
+                    },
+                    {
+                        "type": "Проект 'Цвета в природе'",
+                        "description": "Найдите цвета в природе и опишите их",
+                        "example": "Autumn leaves are orange and brown",
+                        "solution": "Создайте коллаж из природных материалов"
+                    }
+                ]
+            },
+            "семья": {
+                "1-3": [
+                    {
+                        "type": "Игра 'Покажи семью'",
+                        "description": "Покажите на картинке членов семьи",
+                        "example": "Where is mommy? Where is daddy?",
+                        "solution": "Дети показывают пальцем на картинки"
+                    },
+                    {
+                        "type": "Песня 'Family Finger Song'",
+                        "description": "Спойте песню про пальчики семьи",
+                        "example": "Daddy finger, daddy finger, where are you?",
+                        "solution": "Дети показывают пальцы и поют"
+                    }
+                ],
+                "4-7": [
+                    {
+                        "type": "Игра 'Семейное дерево'",
+                        "description": "Постройте семейное дерево",
+                        "example": "Grandma and Grandpa are at the top, Mom and Dad are below",
+                        "solution": "Покажите схему семейного дерева"
+                    },
+                    {
+                        "type": "Диалог 'Расскажи о семье'",
+                        "description": "Расскажите о своей семье",
+                        "example": "I have a mom, a dad, and a sister",
+                        "solution": "Помогите составить простое предложение"
+                    },
+                    {
+                        "type": "Игра 'Семейные роли'",
+                        "description": "Покажите кто что делает в семье",
+                        "example": "Mom cooks dinner. Dad drives the car.",
+                        "solution": "Обсудите обязанности каждого члена семьи"
+                    }
+                ],
+                "8-15": [
+                    {
+                        "type": "Интервью с семьей",
+                        "description": "Возьмите интервью у члена семьи",
+                        "example": "What's your favorite hobby? What do you like to do?",
+                        "solution": "Составьте список вопросов для интервью"
+                    },
+                    {
+                        "type": "Проект 'Семейная история'",
+                        "description": "Расскажите историю своей семьи",
+                        "example": "My family came from Russia. We moved here 5 years ago.",
+                        "solution": "Помогите составить рассказ о семейной истории"
+                    },
+                    {
+                        "type": "Дебаты 'Семейные традиции'",
+                        "description": "Обсудите важность семейных традиций",
+                        "example": "Family traditions help us stay connected",
+                        "solution": "Подготовьте аргументы за и против"
+                    }
+                ]
+            },
+            "еда": {
+                "1-3": [
+                    {
+                        "type": "Игра 'Вкусная еда'",
+                        "description": "Покажите карточки с едой и скажите вкусно",
+                        "example": "Show apple → 'Yummy!'",
+                        "solution": "Дети повторяют 'Yummy!' и показывают на карточки"
+                    },
+                    {
+                        "type": "Игра 'Кормление куклы'",
+                        "description": "Покормите куклу разной едой",
+                        "example": "Feed the doll an apple",
+                        "solution": "Дети берут карточки с едой и 'кормят' куклу"
+                    }
+                ],
+                "4-7": [
+                    {
+                        "type": "Игра 'Что я ем'",
+                        "description": "Опишите еду, дети угадывают",
+                        "example": "It's yellow, it's sweet, monkeys love it. What is it?",
+                        "solution": "It's a banana!"
+                    },
+                    {
+                        "type": "Песня 'Apples and Bananas'",
+                        "description": "Спойте песню про фрукты",
+                        "example": "I like to eat, eat, eat apples and bananas",
+                        "solution": "Дети поют и показывают движения"
+                    },
+                    {
+                        "type": "Игра 'Здоровое питание'",
+                        "description": "Разделите еду на здоровую и нездоровую",
+                        "example": "Apple is healthy. Candy is not healthy",
+                        "solution": "Создайте две корзины для сортировки"
+                    }
+                ],
+                "8-15": [
+                    {
+                        "type": "Диалог 'В ресторане'",
+                        "description": "Составьте диалог заказа еды",
+                        "example": "A: What would you like? B: I'd like pizza, please",
+                        "solution": "Предложите меню и фразы для заказа"
+                    },
+                    {
+                        "type": "Проект 'Мой любимый рецепт'",
+                        "description": "Расскажите о любимом блюде",
+                        "example": "My favorite food is pasta because it's delicious",
+                        "solution": "Помогите составить рецепт на английском"
+                    },
+                    {
+                        "type": "Дебаты 'Здоровое питание'",
+                        "description": "Обсудите важность здорового питания",
+                        "example": "Healthy food gives us energy",
+                        "solution": "Подготовьте аргументы за здоровое питание"
+                    }
+                ]
+            },
+            "одежда": {
+                "1-3": [
+                    {
+                        "type": "Игра 'Одень куклу'",
+                        "description": "Оденьте куклу в разную одежду",
+                        "example": "Put on the hat",
+                        "solution": "Дети одевают куклу по инструкции"
+                    },
+                    {
+                        "type": "Игра 'Покажи одежду'",
+                        "description": "Покажите на себе предметы одежды",
+                        "example": "Show me your shoes",
+                        "solution": "Дети показывают на свою одежду"
+                    }
+                ],
+                "4-7": [
+                    {
+                        "type": "Игра 'Одежда по сезонам'",
+                        "description": "Выберите одежду для разных сезонов",
+                        "example": "Winter: coat, hat, gloves. Summer: dress, shorts",
+                        "solution": "Создайте корзины для каждого сезона"
+                    },
+                    {
+                        "type": "Песня 'Put On Your Shoes'",
+                        "description": "Спойте песню про одевание",
+                        "example": "Put on your shoes, your shoes, your shoes",
+                        "solution": "Дети поют и показывают движения одевания"
+                    },
+                    {
+                        "type": "Игра 'Опиши одежду'",
+                        "description": "Опишите одежду по цвету и размеру",
+                        "example": "It's a big red shirt",
+                        "solution": "Дети угадывают предмет одежды"
+                    }
+                ],
+                "8-15": [
+                    {
+                        "type": "Диалог 'Покупка одежды'",
+                        "description": "Составьте диалог в магазине одежды",
+                        "example": "A: Can I help you? B: I'm looking for a blue shirt",
+                        "solution": "Предложите фразы для покупки одежды"
+                    },
+                    {
+                        "type": "Проект 'Модный показ'",
+                        "description": "Организуйте модный показ",
+                        "example": "This is my favorite outfit for school",
+                        "solution": "Помогите описать наряд на английском"
+                    },
+                    {
+                        "type": "Игра 'Одежда разных стран'",
+                        "description": "Расскажите о традиционной одежде",
+                        "example": "In Japan people wear kimonos",
+                        "solution": "Покажите картинки традиционной одежды"
+                    }
+                ]
+            },
+            "дом": {
+                "1-3": [
+                    {
+                        "type": "Игра 'Дом для куклы'",
+                        "description": "Постройте дом из кубиков",
+                        "example": "Put the bed in the bedroom",
+                        "solution": "Дети строят дом по инструкции"
+                    },
+                    {
+                        "type": "Игра 'Где что лежит'",
+                        "description": "Найдите предметы в доме",
+                        "example": "Where is the book? → In the bedroom",
+                        "solution": "Дети показывают на картинки комнат"
+                    }
+                ],
+                "4-7": [
+                    {
+                        "type": "Игра 'Комнаты дома'",
+                        "description": "Назовите комнаты и что в них",
+                        "example": "Kitchen: stove, fridge, table",
+                        "solution": "Создайте план дома с комнатами"
+                    },
+                    {
+                        "type": "Песня 'My House'",
+                        "description": "Спойте песню про дом",
+                        "example": "This is my house, this is my door",
+                        "solution": "Дети поют и показывают части дома"
+                    },
+                    {
+                        "type": "Игра 'Мебель и предметы'",
+                        "description": "Соедините предметы с комнатами",
+                        "example": "Bed goes in bedroom, stove goes in kitchen",
+                        "solution": "Создайте карточки для сортировки"
+                    }
+                ],
+                "8-15": [
+                    {
+                        "type": "Диалог 'Описание дома'",
+                        "description": "Опишите свой дом",
+                        "example": "My house has three bedrooms and a big kitchen",
+                        "solution": "Помогите составить описание дома"
+                    },
+                    {
+                        "type": "Проект 'Идеальный дом'",
+                        "description": "Спроектируйте идеальный дом",
+                        "example": "My dream house has a swimming pool",
+                        "solution": "Создайте план дома на английском"
+                    },
+                    {
+                        "type": "Игра 'Дома разных стран'",
+                        "description": "Сравните дома в разных странах",
+                        "example": "In England houses are made of brick",
+                        "solution": "Покажите картинки домов разных стран"
+                    }
+                ]
+            },
+            "школа": {
+                "1-3": [
+                    {
+                        "type": "Игра 'Школьные предметы'",
+                        "description": "Покажите школьные принадлежности",
+                        "example": "Show me the book",
+                        "solution": "Дети показывают на школьные предметы"
+                    },
+                    {
+                        "type": "Игра 'Собери портфель'",
+                        "description": "Соберите портфель для школы",
+                        "example": "Put the book in the bag",
+                        "solution": "Дети собирают портфель по инструкции"
+                    }
+                ],
+                "4-7": [
+                    {
+                        "type": "Игра 'Школьные предметы'",
+                        "description": "Назовите предметы и их назначение",
+                        "example": "We use pencil to write, we use ruler to measure",
+                        "solution": "Объясните назначение каждого предмета"
+                    },
+                    {
+                        "type": "Песня 'School Supplies Song'",
+                        "description": "Спойте песню про школьные принадлежности",
+                        "example": "I have a pencil, I have a pen",
+                        "solution": "Дети поют и показывают предметы"
+                    },
+                    {
+                        "type": "Игра 'Что в портфеле'",
+                        "description": "Опишите что лежит в портфеле",
+                        "example": "In my bag I have books, pencils, and an eraser",
+                        "solution": "Дети перечисляют предметы в портфеле"
+                    }
+                ],
+                "8-15": [
+                    {
+                        "type": "Диалог 'В школе'",
+                        "description": "Составьте диалог между учениками",
+                        "example": "A: Can I borrow your pen? B: Sure, here you are",
+                        "solution": "Предложите фразы для общения в школе"
+                    },
+                    {
+                        "type": "Проект 'Мой школьный день'",
+                        "description": "Расскажите о своем школьном дне",
+                        "example": "I go to school at 8 o'clock",
+                        "solution": "Помогите составить расписание дня"
+                    },
+                    {
+                        "type": "Игра 'Школы разных стран'",
+                        "description": "Сравните школы в разных странах",
+                        "example": "In Japan students clean their classrooms",
+                        "solution": "Покажите особенности школ разных стран"
+                    }
+                ]
+            },
+            "хобби": {
+                "1-3": [
+                    {
+                        "type": "Игра 'Что я люблю делать'",
+                        "description": "Покажите любимые занятия",
+                        "example": "I like to play",
+                        "solution": "Дети показывают движения игр"
+                    },
+                    {
+                        "type": "Игра 'Песни и танцы'",
+                        "description": "Спойте и станцуйте",
+                        "example": "Let's sing and dance together",
+                        "solution": "Дети поют и танцуют под музыку"
+                    }
+                ],
+                "4-7": [
+                    {
+                        "type": "Игра 'Мои хобби'",
+                        "description": "Расскажите о своих увлечениях",
+                        "example": "I like to draw pictures",
+                        "solution": "Дети рисуют и рассказывают о рисунке"
+                    },
+                    {
+                        "type": "Песня 'Hobbies Song'",
+                        "description": "Спойте песню про хобби",
+                        "example": "I like to read, I like to play",
+                        "solution": "Дети поют и показывают свои хобби"
+                    },
+                    {
+                        "type": "Игра 'Угадай хобби'",
+                        "description": "Опишите хобби, дети угадывают",
+                        "example": "I use brushes and paint. What is my hobby?",
+                        "solution": "It's painting!"
+                    }
+                ],
+                "8-15": [
+                    {
+                        "type": "Диалог 'О хобби'",
+                        "description": "Обсудите хобби с друзьями",
+                        "example": "A: What's your hobby? B: I like playing football",
+                        "solution": "Предложите фразы для обсуждения хобби"
+                    },
+                    {
+                        "type": "Проект 'Мое хобби'",
+                        "description": "Создайте презентацию о своем хобби",
+                        "example": "My hobby is photography. I take pictures of nature",
+                        "solution": "Помогите составить презентацию на английском"
+                    },
+                    {
+                        "type": "Игра 'Хобби знаменитостей'",
+                        "description": "Расскажите о хобби известных людей",
+                        "example": "Einstein liked playing violin",
+                        "solution": "Покажите интересные факты о хобби знаменитостей"
+                    }
+                ]
+            },
+            "части тела": {
+                "1-3": [
+                    {
+                        "type": "Игра 'Покажи части тела'",
+                        "description": "Покажите на себе части тела",
+                        "example": "Show me your nose",
+                        "solution": "Дети показывают на свои части тела"
+                    },
+                    {
+                        "type": "Песня 'Head, Shoulders, Knees and Toes'",
+                        "description": "Спойте песню про части тела",
+                        "example": "Head, shoulders, knees and toes",
+                        "solution": "Дети поют и показывают на части тела"
+                    }
+                ],
+                "4-7": [
+                    {
+                        "type": "Игра 'Одень куклу'",
+                        "description": "Оденьте куклу и назовите части тела",
+                        "example": "Put shoes on feet, hat on head",
+                        "solution": "Дети одевают куклу и называют части тела"
+                    },
+                    {
+                        "type": "Игра 'Угадай часть тела'",
+                        "description": "Опишите часть тела, дети угадывают",
+                        "example": "We use it to smell. What is it?",
+                        "solution": "It's a nose!"
+                    }
+                ],
+                "8-15": [
+                    {
+                        "type": "Диалог 'У врача'",
+                        "description": "Составьте диалог с врачом",
+                        "example": "A: What's wrong? B: My head hurts",
+                        "solution": "Предложите фразы для описания боли"
+                    },
+                    {
+                        "type": "Проект 'Человеческое тело'",
+                        "description": "Опишите функции частей тела",
+                        "example": "The heart pumps blood through the body",
+                        "solution": "Помогите составить описание функций органов"
+                    }
+                ]
+            },
+            "игрушки": {
+                "1-3": [
+                    {
+                        "type": "Игра 'Мои игрушки'",
+                        "description": "Покажите любимые игрушки",
+                        "example": "This is my teddy bear",
+                        "solution": "Дети приносят игрушки и показывают их"
+                    },
+                    {
+                        "type": "Игра 'Спрячь игрушку'",
+                        "description": "Спрячьте игрушку и попросите найти",
+                        "example": "Where is the ball?",
+                        "solution": "Дети ищут спрятанную игрушку"
+                    }
+                ],
+                "4-7": [
+                    {
+                        "type": "Игра 'Опиши игрушку'",
+                        "description": "Опишите игрушку по цвету и размеру",
+                        "example": "It's a big red car",
+                        "solution": "Дети угадывают игрушку по описанию"
+                    },
+                    {
+                        "type": "Песня 'Toys Song'",
+                        "description": "Спойте песню про игрушки",
+                        "example": "I have a ball, I have a doll",
+                        "solution": "Дети поют и показывают свои игрушки"
+                    }
+                ],
+                "8-15": [
+                    {
+                        "type": "Диалог 'В магазине игрушек'",
+                        "description": "Составьте диалог покупки игрушки",
+                        "example": "A: How much is this toy? B: It's 20 dollars",
+                        "solution": "Предложите фразы для покупки"
+                    },
+                    {
+                        "type": "Проект 'Моя любимая игрушка'",
+                        "description": "Расскажите о любимой игрушке",
+                        "example": "My favorite toy is a robot because it can move",
+                        "solution": "Помогите составить рассказ об игрушке"
+                    }
+                ]
+            }
+        }
+        
+        # Получаем задания для конкретной темы и возраста
+        theme_tasks = tasks_dict.get(self.theme, {})
+        age_tasks = theme_tasks.get(self.age_group, [])
+        
+        # Если нет заданий для конкретного возраста, берем ближайший
+        if not age_tasks:
+            if self.age_group == "1-3":
+                age_tasks = theme_tasks.get("4-7", [])
+            elif self.age_group == "4-7":
+                age_tasks = theme_tasks.get("8-15", [])
+            else:
+                age_tasks = theme_tasks.get("4-7", [])
+        
+        return age_tasks[:3]  # Возвращаем максимум 3 задания
 
     def get_lesson_plan(self):
         phases = {
-            45: ["Разминка (5 мин)", "Изучение лексики (15 мин)", "Игра (10 мин)", "Практика (10 мин)", "Завершение (5 мин)"],
-            60: ["Разминка (10 мин)", "Изучение лексики (20 мин)", "Игра (10 мин)", "Практика (15 мин)", "Завершение (5 мин)"]
+            30: ["Разминка (3 мин)", "Изучение лексики (12 мин)", "Задания (10 мин)", "Завершение (5 мин)"],
+            45: ["Разминка (5 мин)", "Изучение лексики (15 мин)", "Задания (20 мин)", "Завершение (5 мин)"],
+            60: ["Разминка (10 мин)", "Изучение лексики (20 мин)", "Задания (25 мин)", "Завершение (5 мин)"],
+            90: ["Разминка (10 мин)", "Изучение лексики (25 мин)", "Задания (45 мин)", "Завершение (10 мин)"]
         }
+        
         plan = f"🎓 ПЛАН УРОКА\n"
         plan += f"Тема: {self.theme.title()}\n"
         plan += f"Возраст: {self.age_group}\n"
-        plan += f"Уровень: {self.level.upper()}\n"
         plan += f"Длительность: {self.duration} минут\n"
-        plan += f"\nФАЗЫ УРОКА:\n"
+        
+        plan += f"\n📚 СЛОВАРЬ ({len(self.vocabulary)} слов):\n"
+        for word in self.vocabulary:
+            plan += f"• {word}\n"
+        
+        plan += f"\n⏰ ФАЗЫ УРОКА:\n"
         for phase in phases.get(self.duration, phases[45]):
             plan += f"• {phase}\n"
-        plan += f"\nМатериалы: карточки, аудио, раскраски по теме '{self.theme}'\n"
+        
+        plan += f"\n🎯 КОНКРЕТНЫЕ ЗАДАНИЯ:\n"
+        for i, task in enumerate(self.tasks, 1):
+            plan += f"\n{i}. {task['type']}\n"
+            plan += f"   📝 Описание: {task['description']}\n"
+            plan += f"   💡 Пример: {task['example']}\n"
+            plan += f"   ✅ Решение: {task['solution']}\n"
+        
+        plan += f"\n📦 МАТЕРИАЛЫ:\n"
+        plan += f"• Карточки со словами по теме '{self.theme}'\n"
+        plan += f"• Раскраски и рабочие листы\n"
+        plan += f"• Аудиозаписи и песни\n"
+        plan += f"• Игрушки и предметы для демонстрации\n"
+        
         return plan
 
 
 # --- Конструктор занятий ---
-def Constructor():
+def Constructor(parent_window=None):
     win = tk.Toplevel()
     win.title("Конструктор уроков")
-    win.geometry("800x700")
-    win.configure(bg="#f0f8ff")
+    win.geometry("800x750")
+    win.resizable(False, False)
+    win.configure(bg="#fffacd")  # Бледно-желтый фон
 
-    tk.Label(win, text="🎓 Конструктор уроков", font=("Arial", 24, "bold"), bg="#4169e1", fg="white", pady=15).pack(fill="x")
+    # Центрируем окно
+    center_window(win)
 
-    frame = tk.Frame(win, bg="#f0f8ff", padx=20, pady=20)
+    # Заголовок с зеленым фоном
+    header_frame = tk.Frame(win, bg="#4CAF50", height=80)
+    header_frame.pack(fill="x")
+    header_frame.pack_propagate(False)
+    
+    # Кнопка "Назад" в левом углу
+    def go_back():
+        win.destroy()
+        if parent_window:
+            parent_window.deiconify()  # Показываем родительское окно обратно
+    
+    back_btn = tk.Button(header_frame, text="← Назад", font=("Arial", 10, "bold"),
+                        bg="#2E7D32", fg="white", width=8, height=1,
+                        relief="flat", bd=0, cursor="hand2",
+                        activebackground="#1B5E20", command=go_back)
+    back_btn.place(x=10, y=25)
+    
+    tk.Label(header_frame, text="🎓 Конструктор уроков", 
+             font=("Arial", 24, "bold"), bg="#4CAF50", fg="white").pack(pady=20)
+
+    frame = tk.Frame(win, bg="#fffacd", padx=20, pady=20)  # Бледно-желтый фон
     frame.pack(fill="both", expand=True)
 
     # Возрастная группа (первая)
-    tk.Label(frame, text="Возрастная группа:", font=("Arial", 12), bg="#f0f8ff").grid(row=0, column=0, sticky="w", pady=10)
+    tk.Label(frame, text="Возрастная группа:", font=("Arial", 12, "bold"), bg="#fffacd", fg="#2e7d32").grid(row=0, column=0, sticky="w", pady=10)
     age_var = tk.StringVar()
     age_combo = ttk.Combobox(frame, textvariable=age_var, values=["Дети 1-3 года", "Дошкольники 4-7 лет", "Школьники 8-15 лет"], width=30, state="readonly")
     age_combo.grid(row=0, column=1)
 
     # Тема урока (вторая, зависит от возраста)
-    tk.Label(frame, text="Тема урока:", font=("Arial", 12), bg="#f0f8ff").grid(row=1, column=0, sticky="w", pady=10)
+    tk.Label(frame, text="Тема урока:", font=("Arial", 12, "bold"), bg="#fffacd", fg="#2e7d32").grid(row=1, column=0, sticky="w", pady=10)
     theme_var = tk.StringVar()
     theme_combo = ttk.Combobox(frame, textvariable=theme_var, width=30, state="readonly")
     theme_combo.grid(row=1, column=1)
 
     # Длительность (третья)
-    tk.Label(frame, text="Длительность (мин):", font=("Arial", 12), bg="#f0f8ff").grid(row=2, column=0, sticky="w", pady=10)
+    tk.Label(frame, text="Длительность (мин):", font=("Arial", 12, "bold"), bg="#fffacd", fg="#2e7d32").grid(row=2, column=0, sticky="w", pady=10)
     duration_var = tk.StringVar(value="45")
     duration_combo = ttk.Combobox(frame, textvariable=duration_var, values=["30", "45", "60", "90"], width=30, state="readonly")
     duration_combo.grid(row=2, column=1)
 
     # Область вывода
-    tk.Label(frame, text="План урока:", font=("Arial", 12, "bold"), bg="#f0f8ff").grid(row=4, column=0, columnspan=2, sticky="w", pady=10)
-    output = scrolledtext.ScrolledText(frame, width=70, height=20, font=("Courier", 10))
+    tk.Label(frame, text="План урока:", font=("Arial", 12, "bold"), bg="#fffacd", fg="#2e7d32").grid(row=4, column=0, columnspan=2, sticky="w", pady=10)
+    output = scrolledtext.ScrolledText(frame, width=70, height=20, font=("Courier", 10), bg="#ffffff", fg="#333333")
     output.grid(row=5, column=0, columnspan=2, pady=10)
 
     # Словари тем для разных возрастных групп
@@ -143,20 +799,21 @@ def Constructor():
             messagebox.showerror("Ошибка", f"Произошла ошибка: {e}")
 
     tk.Button(frame, text="Создать урок", font=("Arial", 14, "bold"), bg="#4CAF50", fg="white",
-              width=25, height=2, command=create_lesson).grid(row=3, column=0, columnspan=2, pady=20)
+              width=25, height=2, command=create_lesson, relief="flat", bd=0, cursor="hand2",
+              activebackground="#45a049").grid(row=3, column=0, columnspan=2, pady=20)
 
 
 # --- Окно игровых занятий для дошкольников ---
 def show_preschool_activities_window(root_parent=None):
-    # Закрываем родительское окно если оно есть
+    # Не закрываем родительское окно, просто скрываем его
     if root_parent:
-        root_parent.destroy()
+        root_parent.withdraw()  # Скрываем вместо закрытия
     
     activities_win = tk.Tk()
     activities_win.title("Игровые занятия для дошкольников")
     activities_win.geometry("750x700")
     activities_win.resizable(False, False)
-    activities_win.configure(bg="#f0f8ff")
+    activities_win.configure(bg="#fffacd")  # Бледно-желтый фон
     
     center_window(activities_win)
     
@@ -165,11 +822,25 @@ def show_preschool_activities_window(root_parent=None):
     header_frame.pack(fill="x")
     header_frame.pack_propagate(False)
     
+    # Кнопка "Назад" в левом углу
+    def go_back():
+        activities_win.destroy()
+        if root_parent:
+            root_parent.deiconify()  # Показываем родительское окно обратно
+        else:
+            Menu()  # Если нет родительского окна, создаем новое меню
+    
+    back_btn = tk.Button(header_frame, text="← Назад", font=("Arial", 10, "bold"),
+                        bg="#2E7D32", fg="white", width=8, height=1,
+                        relief="flat", bd=0, cursor="hand2",
+                        activebackground="#1B5E20", command=go_back)
+    back_btn.place(x=10, y=35)
+    
     tk.Label(header_frame, text="🎨 Игровые занятия для дошкольников", 
              font=("Arial", 20, "bold"), bg="#4CAF50", fg="white").pack(pady=25)
     
     # Контейнер для занятий
-    container = tk.Frame(activities_win, bg="#f0f8ff", padx=30, pady=20)
+    container = tk.Frame(activities_win, bg="#fffacd", padx=30, pady=20)
     container.pack(fill="both", expand=True)
     
     # Описание
@@ -213,29 +884,37 @@ def show_preschool_activities_window(root_parent=None):
         activity_win.title(activity["title"])
         activity_win.geometry("600x500")
         activity_win.resizable(False, False)
-        activity_win.configure(bg="#f0f8ff")
+        activity_win.configure(bg="#fffacd")  # Бледно-желтый фон
         center_window(activity_win)
         
         # Заголовок занятия
         header = tk.Frame(activity_win, bg="#4CAF50", height=80)
         header.pack(fill="x")
         header.pack_propagate(False)
+        
+        # Кнопка "Назад" в левом углу
+        back_btn = tk.Button(header, text="← Назад", font=("Arial", 9, "bold"),
+                            bg="#2E7D32", fg="white", width=7, height=1,
+                            relief="flat", bd=0, cursor="hand2",
+                            activebackground="#1B5E20", command=activity_win.destroy)
+        back_btn.place(x=10, y=25)
+        
         tk.Label(header, text=activity["title"], 
                 font=("Arial", 18, "bold"), bg="#4CAF50", fg="white").pack(pady=20)
         
         # Основной контент
-        content = tk.Frame(activity_win, bg="#f0f8ff", padx=30, pady=20)
+        content = tk.Frame(activity_win, bg="#fffacd", padx=30, pady=20)
         content.pack(fill="both", expand=True)
         
         # Описание
         tk.Label(content, text="Описание занятия:", 
-                font=("Arial", 12, "bold"), bg="#f0f8ff", fg="#333").pack(anchor="w", pady=(0, 5))
+                font=("Arial", 12, "bold"), bg="#fffacd", fg="#2e7d32").pack(anchor="w", pady=(0, 5))
         tk.Label(content, text=activity["description"], 
-                font=("Arial", 11), bg="#f0f8ff", fg="#555").pack(anchor="w", pady=(0, 15))
+                font=("Arial", 11), bg="#fffacd", fg="#555").pack(anchor="w", pady=(0, 15))
         
         # Детали
         tk.Label(content, text="Что включено:", 
-                font=("Arial", 12, "bold"), bg="#f0f8ff", fg="#333").pack(anchor="w", pady=(0, 5))
+                font=("Arial", 12, "bold"), bg="#fffacd", fg="#2e7d32").pack(anchor="w", pady=(0, 5))
         
         details_frame = tk.Frame(content, bg="#e8f5e9", relief="solid", bd=1, padx=15, pady=10)
         details_frame.pack(fill="x", pady=(0, 15))
@@ -245,34 +924,37 @@ def show_preschool_activities_window(root_parent=None):
         # Кнопка закрыть
         tk.Button(content, text="✅ Закрыть", font=("Arial", 12, "bold"),
                   bg="#4CAF50", fg="white", width=15, height=2,
-                  activebackground="#45a049", relief="flat", bd=0,
+                  activebackground="#45a049", relief="flat", bd=0, cursor="hand2",
                   command=activity_win.destroy).pack(pady=20)
     
     # Создаём кнопки для каждого занятия
     for i, activity in enumerate(activities):
-        btn_frame = tk.Frame(container, bg="#f0f8ff")
+        btn_frame = tk.Frame(container, bg="#fffacd")
         btn_frame.pack(pady=10, fill="x")
         
         btn = tk.Button(btn_frame, text=f"{activity['title']}\n\n{activity['description']}",
                         font=("Arial", 12, "bold"), bg="#66bb6a", fg="white",
                         height=3, relief="flat", bd=0,
                         activebackground="#4caf50", cursor="hand2",
-                        wraplength=650, justify="center", anchor="w",
-                        command=lambda a=activity: open_activity(a))
+                        wraplength=650, justify="center", anchor="w")
         btn.pack(padx=10, pady=5, fill="x")
+        btn.bind("<Button-1>", lambda e, a=activity: open_activity(a))
     
     # Кнопка возврата
-    back_frame = tk.Frame(container, bg="#f0f8ff")
+    back_frame = tk.Frame(container, bg="#fffacd")
     back_frame.pack(pady=20)
     
     def back_to_menu():
         activities_win.destroy()
-        Menu()
+        if root_parent:
+            root_parent.deiconify()  # Показываем родительское окно обратно
+        else:
+            Menu()  # Если нет родительского окна, создаем новое меню
     
     tk.Button(back_frame, text="🔙 Назад в главное меню", 
-              font=("Arial", 11, "bold"), bg="#999999", fg="white",
+              font=("Arial", 11, "bold"), bg="#8BC34A", fg="white",
               width=30, height=2, relief="flat", bd=0,
-              activebackground="#777777",
+              activebackground="#689F38", cursor="hand2",
               command=back_to_menu).pack()
     
     activities_win.mainloop()
@@ -280,35 +962,49 @@ def show_preschool_activities_window(root_parent=None):
 
 # --- Окно клубов для школьников ---
 def show_school_clubs_window(root_parent=None):
-    # Закрываем родительское окно если оно есть
+    # Не закрываем родительское окно, просто скрываем его
     if root_parent:
-        root_parent.destroy()
+        root_parent.withdraw()  # Скрываем вместо закрытия
     
     clubs_win = tk.Tk()
     clubs_win.title("Клубы для школьников")
     clubs_win.geometry("750x700")
     clubs_win.resizable(False, False)
-    clubs_win.configure(bg="#f0f8ff")
+    clubs_win.configure(bg="#fffacd")  # Бледно-желтый фон
     
     center_window(clubs_win)
     
     # Заголовок
-    header_frame = tk.Frame(clubs_win, bg="#2196F3", height=100)
+    header_frame = tk.Frame(clubs_win, bg="#4CAF50", height=100)
     header_frame.pack(fill="x")
     header_frame.pack_propagate(False)
     
+    # Кнопка "Назад" в левом углу
+    def go_back():
+        clubs_win.destroy()
+        if root_parent:
+            root_parent.deiconify()  # Показываем родительское окно обратно
+        else:
+            Menu()  # Если нет родительского окна, создаем новое меню
+    
+    back_btn = tk.Button(header_frame, text="← Назад", font=("Arial", 10, "bold"),
+                        bg="#2E7D32", fg="white", width=8, height=1,
+                        relief="flat", bd=0, cursor="hand2",
+                        activebackground="#1B5E20", command=go_back)
+    back_btn.place(x=10, y=35)
+    
     tk.Label(header_frame, text="🏫 Языковые клубы для школьников", 
-             font=("Arial", 20, "bold"), bg="#2196F3", fg="white").pack(pady=25)
+             font=("Arial", 20, "bold"), bg="#4CAF50", fg="white").pack(pady=25)
     
     # Контейнер для клубов
-    container = tk.Frame(clubs_win, bg="#f0f8ff", padx=30, pady=20)
+    container = tk.Frame(clubs_win, bg="#fffacd", padx=30, pady=20)
     container.pack(fill="both", expand=True)
     
     # Описание
-    desc_frame = tk.Frame(container, bg="#e3f2fd", relief="solid", bd=1, padx=15, pady=10)
+    desc_frame = tk.Frame(container, bg="#e8f5e9", relief="solid", bd=1, padx=15, pady=10)
     desc_frame.pack(fill="x", pady=(0, 15))
     tk.Label(desc_frame, text="Выберите увлекательный клуб для развития английского языка!",
-             font=("Arial", 11), bg="#e3f2fd", fg="#333").pack()
+             font=("Arial", 11), bg="#e8f5e9", fg="#333").pack()
     
     # Описание для каждого клуба
     clubs = [
@@ -345,69 +1041,89 @@ def show_school_clubs_window(root_parent=None):
         club_win.title(club["title"])
         club_win.geometry("600x550")
         club_win.resizable(False, False)
-        club_win.configure(bg="#f0f8ff")
+        club_win.configure(bg="#fffacd")  # Бледно-желтый фон
         center_window(club_win)
         
         # Заголовок клуба
-        header = tk.Frame(club_win, bg="#2196F3", height=80)
+        header = tk.Frame(club_win, bg="#4CAF50", height=80)
         header.pack(fill="x")
         header.pack_propagate(False)
+        
+        # Кнопка "Назад" в левом углу
+        back_btn = tk.Button(header, text="← Назад", font=("Arial", 9, "bold"),
+                            bg="#2E7D32", fg="white", width=7, height=1,
+                            relief="flat", bd=0, cursor="hand2",
+                            activebackground="#1B5E20", command=club_win.destroy)
+        back_btn.place(x=10, y=25)
+        
         tk.Label(header, text=club["title"], 
-                font=("Arial", 16, "bold"), bg="#2196F3", fg="white", wraplength=500).pack(pady=20)
+                font=("Arial", 16, "bold"), bg="#4CAF50", fg="white", wraplength=500).pack(pady=20)
         
         # Основной контент
-        content = tk.Frame(club_win, bg="#f0f8ff", padx=30, pady=20)
+        content = tk.Frame(club_win, bg="#fffacd", padx=30, pady=20)
         content.pack(fill="both", expand=True)
         
         # Описание
         tk.Label(content, text="Описание клуба:", 
-                font=("Arial", 12, "bold"), bg="#f0f8ff", fg="#333").pack(anchor="w", pady=(0, 5))
+                font=("Arial", 12, "bold"), bg="#fffacd", fg="#2e7d32").pack(anchor="w", pady=(0, 5))
         tk.Label(content, text=club["description"], 
-                font=("Arial", 11), bg="#f0f8ff", fg="#555").pack(anchor="w", pady=(0, 15))
+                font=("Arial", 11), bg="#fffacd", fg="#555").pack(anchor="w", pady=(0, 15))
         
         # Детали
         tk.Label(content, text="Что включает:", 
-                font=("Arial", 12, "bold"), bg="#f0f8ff", fg="#333").pack(anchor="w", pady=(0, 5))
+                font=("Arial", 12, "bold"), bg="#fffacd", fg="#2e7d32").pack(anchor="w", pady=(0, 5))
         
-        details_frame = tk.Frame(content, bg="#e3f2fd", relief="solid", bd=1, padx=15, pady=10)
+        details_frame = tk.Frame(content, bg="#e8f5e9", relief="solid", bd=1, padx=15, pady=10)
         details_frame.pack(fill="x", pady=(0, 15))
         tk.Label(details_frame, text=club["details"], 
-                font=("Arial", 11), bg="#e3f2fd", fg="#333", justify="left").pack(anchor="w")
+                font=("Arial", 11), bg="#e8f5e9", fg="#333", justify="left").pack(anchor="w")
         
         # Кнопка закрыть
         tk.Button(content, text="✅ Закрыть", font=("Arial", 12, "bold"),
-                  bg="#2196F3", fg="white", width=15, height=2,
-                  activebackground="#1976D2", relief="flat", bd=0,
+                  bg="#4CAF50", fg="white", width=15, height=2,
+                  activebackground="#45a049", relief="flat", bd=0, cursor="hand2",
                   command=club_win.destroy).pack(pady=20)
     
     # Создаём кнопки для каждого клуба
     for i, club in enumerate(clubs):
-        btn_frame = tk.Frame(container, bg="#f0f8ff")
+        btn_frame = tk.Frame(container, bg="#fffacd")
         btn_frame.pack(pady=10, fill="x")
         
         btn = tk.Button(btn_frame, text=f"{club['title']}\n\n{club['description']}",
-                        font=("Arial", 11, "bold"), bg="#64b5f6", fg="white",
+                        font=("Arial", 11, "bold"), bg="#66bb6a", fg="white",
                         height=3, relief="flat", bd=0,
-                        activebackground="#42a5f5", cursor="hand2",
-                        wraplength=650, justify="left", anchor="w",
-                        command=lambda c=club: open_club(c))
+                        activebackground="#4caf50", cursor="hand2",
+                        wraplength=650, justify="left", anchor="w")
         btn.pack(padx=10, pady=5, fill="x")
+        btn.bind("<Button-1>", lambda e, c=club: open_club(c))
     
     # Кнопка возврата
-    back_frame = tk.Frame(container, bg="#f0f8ff")
+    back_frame = tk.Frame(container, bg="#fffacd")
     back_frame.pack(pady=20)
     
     def back_to_menu():
         clubs_win.destroy()
-        Menu()
+        if root_parent:
+            root_parent.deiconify()  # Показываем родительское окно обратно
+        else:
+            Menu()  # Если нет родительского окна, создаем новое меню
     
     tk.Button(back_frame, text="🔙 Назад в главное меню", 
-              font=("Arial", 11, "bold"), bg="#999999", fg="white",
+              font=("Arial", 11, "bold"), bg="#8BC34A", fg="white",
               width=30, height=2, relief="flat", bd=0,
-              activebackground="#777777",
+              activebackground="#689F38", cursor="hand2",
               command=back_to_menu).pack()
     
     clubs_win.mainloop()
+
+
+# --- Функция выхода из аккаунта ---
+def logout_and_exit(root_window):
+    """Выход из аккаунта и возврат к окну входа"""
+    global current_user
+    current_user = None
+    root_window.destroy()
+    show_login_window()
 
 
 # --- Главное меню ---
@@ -416,36 +1132,44 @@ def Menu():
     root.title("Полиглотики — Главное меню")
     root.geometry("800x700")
     root.resizable(False, False)
-    root.configure(bg="#f0f8ff")
+    root.configure(bg="#fffacd")  # Бледно-желтый фон
 
     # Центрируем окно
     center_window(root)
 
-    # Красивый заголовок с градиентом
-    header_frame = tk.Frame(root, bg="#4169e1", height=120)
+    # Красивый заголовок с зеленым фоном
+    header_frame = tk.Frame(root, bg="#4CAF50", height=120)
     header_frame.pack(fill="x")
     header_frame.pack_propagate(False)
     
+    # Кнопка "Выйти из аккаунта" в правом углу (только для авторизованных пользователей)
+    if current_user:
+        logout_btn = tk.Button(header_frame, text="🚪 Выйти", font=("Arial", 10, "bold"),
+                              bg="#D32F2F", fg="white", width=10, height=1,
+                              relief="flat", bd=0, cursor="hand2",
+                              activebackground="#B71C1C", command=lambda: logout_and_exit(root))
+        logout_btn.place(relx=0.85, y=25)
+    
     tk.Label(header_frame, text="🎓 ПОЛИГЛОТИКИ", 
-             font=("Arial", 32, "bold"), bg="#4169e1", fg="white").pack(pady=(20, 5))
+             font=("Arial", 32, "bold"), bg="#4CAF50", fg="white").pack(pady=(20, 5))
     tk.Label(header_frame, text="Детский языковой центр", 
-             font=("Arial", 16), bg="#4169e1", fg="white").pack(pady=(0, 20))
+             font=("Arial", 16), bg="#4CAF50", fg="white").pack(pady=(0, 20))
 
     # Основной контейнер
-    main_container = tk.Frame(root, bg="#f0f8ff", padx=30, pady=20)
+    main_container = tk.Frame(root, bg="#fffacd", padx=30, pady=20)
     main_container.pack(fill="both", expand=True)
 
     # Описание
-    desc_frame = tk.Frame(main_container, bg="#e3f2fd", relief="solid", bd=1, padx=20, pady=15)
+    desc_frame = tk.Frame(main_container, bg="#e8f5e9", relief="solid", bd=1, padx=20, pady=15)
     desc_frame.pack(fill="x", pady=15)
     
     tk.Label(desc_frame,
              text="Комплексное развитие: пение, танцы, рисование, творчество\n"
                   "Задания на внимание, память, логику и мышление",
-             font=("Arial", 12), bg="#e3f2fd", fg="#333", wraplength=650).pack()
+             font=("Arial", 12), bg="#e8f5e9", fg="#333", wraplength=650).pack()
 
     # Кнопки занятий
-    btn_frame = tk.Frame(main_container, bg="#f0f8ff")
+    btn_frame = tk.Frame(main_container, bg="#fffacd")
     btn_frame.pack(pady=20)
     
     # Получаем возраст пользователя
@@ -453,91 +1177,100 @@ def Menu():
     if current_user:
         user_age = current_user.get("age")
     
-    # Функция для проверки доступа к дошкольным занятиям (доступны <= 7 лет)
+    # Функция для проверки доступа к дошкольным занятиям (доступны <= 7 лет, но учителям доступны всегда)
     def check_preschool_access():
-        if user_age is not None and user_age > 7:
+        user_role = current_user.get("role") if current_user else None
+        if user_role == "учитель" or user_age is None or user_age <= 7:
+            root.withdraw()  # Скрываем главное меню
+            show_preschool_activities_window(root)
+        else:
             year_word = "лет" if user_age > 4 else ("год" if user_age == 1 else "года")
             messagebox.showinfo("⛔ Недоступно", 
                                f"🎨 Игровые занятия для дошкольников доступны только до 7 лет включительно.\n\n"
                                f"Ваш возраст: {user_age} {year_word}.\n\n"
                                f"📚 Для вас доступны клубы для школьников!\n"
                                f"Увлекательные проекты и продвинутые занятия ждут!")
-        else:
-            show_preschool_activities_window(root)
     
-    # Функция для проверки доступа к клубам (доступны >= 7 лет)
+    # Функция для проверки доступа к клубам (доступны >= 7 лет, но учителям доступны всегда)
     def check_club_access():
-        if user_age is not None and user_age < 7:
+        user_role = current_user.get("role") if current_user else None
+        if user_role == "учитель" or user_age is None or user_age >= 7:
+            root.withdraw()  # Скрываем главное меню
+            show_school_clubs_window(root)
+        else:
             year_word = "лет" if user_age > 4 else ("год" if user_age == 1 else "года")
             messagebox.showinfo("⛔ Недоступно", 
                                f"📚 Клубы для школьников доступны только с 7 лет.\n\n"
                                f"Ваш возраст: {user_age} {year_word}.\n\n"
                                f"🎯 Изучайте материал для дошкольников!\n"
                                f"Увлекательные игры и занятия уже доступны!")
-        else:
-            show_school_clubs_window(root)
 
-    # Создаем кнопку дошкольных занятий - меняем стиль если недоступна (недоступна > 7)
-    if user_age is not None and user_age > 7:
-        tk.Button(btn_frame, text="🎨 Игровые занятия\nдля дошкольников", 
-                  font=("Arial", 14, "bold"), bg="#999999", fg="white", 
-                  width=22, height=3, relief="flat", bd=0,
-                  activebackground="#777777", cursor="hand2",
-                  command=check_preschool_access).grid(row=0, column=0, padx=15)
-        
-        # Добавляем метку "Недоступно"
-        tk.Label(btn_frame, text="👶 До 7 лет", 
-                font=("Arial", 10, "italic"), bg="#f0f8ff", fg="#999").grid(row=1, column=0, pady=5)
-    else:
+    # Создаем кнопку дошкольных занятий - меняем стиль если недоступна (недоступна > 7, но учителям доступны всегда)
+    user_role = current_user.get("role") if current_user else None
+    if user_role == "учитель" or user_age is None or user_age <= 7:
         tk.Button(btn_frame, text="🎨 Игровые занятия\nдля дошкольников", 
                   font=("Arial", 14, "bold"), bg="#4CAF50", fg="white", 
                   width=22, height=3, relief="flat", bd=0,
                   activebackground="#45a049", cursor="hand2",
                   command=check_preschool_access).grid(row=0, column=0, padx=15)
-
-    # Создаем кнопку клубов - меняем стиль если недоступна (недоступна < 7)
-    if user_age is not None and user_age < 7:
-        tk.Button(btn_frame, text="📚 Клубы\nдля школьников", 
-                  font=("Arial", 14, "bold"), bg="#999999", fg="white", 
+    else:
+        tk.Button(btn_frame, text="🎨 Игровые занятия\nдля дошкольников", 
+                  font=("Arial", 14, "bold"), bg="#A5D6A7", fg="white", 
                   width=22, height=3, relief="flat", bd=0,
-                  activebackground="#777777", cursor="hand2",
+                  activebackground="#81C784", cursor="hand2",
+                  command=check_preschool_access).grid(row=0, column=0, padx=15)
+        
+        # Добавляем метку "Недоступно"
+        tk.Label(btn_frame, text="👶 До 7 лет", 
+                font=("Arial", 10, "italic"), bg="#fffacd", fg="#999").grid(row=1, column=0, pady=5)
+
+    # Создаем кнопку клубов - меняем стиль если недоступна (недоступна < 7, но учителям доступны всегда)
+    if user_role == "учитель" or user_age is None or user_age >= 7:
+        tk.Button(btn_frame, text="📚 Клубы\nдля школьников", 
+                  font=("Arial", 14, "bold"), bg="#66BB6A", fg="white", 
+                  width=22, height=3, relief="flat", bd=0,
+                  activebackground="#4CAF50", cursor="hand2",
+                  command=check_club_access).grid(row=0, column=1, padx=15)
+    else:
+        tk.Button(btn_frame, text="📚 Клубы\nдля школьников", 
+                  font=("Arial", 14, "bold"), bg="#A5D6A7", fg="white", 
+                  width=22, height=3, relief="flat", bd=0,
+                  activebackground="#81C784", cursor="hand2",
                   command=check_club_access).grid(row=0, column=1, padx=15)
         
         # Добавляем метку "Недоступно"
         tk.Label(btn_frame, text="⏳ Доступно с 7 лет", 
-                font=("Arial", 10, "italic"), bg="#f0f8ff", fg="#999").grid(row=1, column=1, pady=5)
-    else:
-        tk.Button(btn_frame, text="📚 Клубы\nдля школьников", 
-                  font=("Arial", 14, "bold"), bg="#2196F3", fg="white", 
-                  width=22, height=3, relief="flat", bd=0,
-                  activebackground="#0b7dda", cursor="hand2",
-                  command=check_club_access).grid(row=0, column=1, padx=15)
+                font=("Arial", 10, "italic"), bg="#fffacd", fg="#999").grid(row=1, column=1, pady=5)
 
     # Центральная кнопка конструктора
-    center_frame = tk.Frame(main_container, bg="#f0f8ff")
+    center_frame = tk.Frame(main_container, bg="#fffacd")
     center_frame.pack(pady=25)
 
     # Показываем кнопку конструктора только для учителей
     if current_user and current_user.get("role") == "учитель":
+        def open_constructor():
+            root.withdraw()  # Скрываем главное меню
+            Constructor(root)
+        
         tk.Button(center_frame, text="🛠️ Конструктор занятий", 
-                  font=("Arial", 16, "bold"), bg="#FF9800", fg="white", 
+                  font=("Arial", 16, "bold"), bg="#8BC34A", fg="white", 
                   width=28, height=2, relief="flat", bd=0,
-                  activebackground="#f57c00", cursor="hand2",
-                  command=Constructor).pack()
+                  activebackground="#689F38", cursor="hand2",
+                  command=open_constructor).pack()
 
     # Методика
-    method_frame = tk.Frame(main_container, bg="#e3f2fd", relief="solid", bd=1, padx=20, pady=12)
+    method_frame = tk.Frame(main_container, bg="#e8f5e9", relief="solid", bd=1, padx=20, pady=12)
     method_frame.pack(fill="x", pady=10)
     
     tk.Label(method_frame,
              text="📖 Методика: One Person - One Language\n💡 Развиваем речь, восприятие, чтение, письмо",
-             font=("Arial", 11), bg="#e3f2fd", fg="#555555").pack()
+             font=("Arial", 11), bg="#e8f5e9", fg="#555555").pack()
 
     # Информация о пользователе внизу
-    user_frame = tk.Frame(root, bg="#e8eaf6", height=50)
+    user_frame = tk.Frame(root, bg="#C8E6C9", height=50)
     user_frame.pack(fill="x", side="bottom")
     user_frame.pack_propagate(False)
-    
+
     if current_user:
         username = current_user.get("login", "Пользователь")
         user_role = current_user.get("role", "")
@@ -549,7 +1282,7 @@ def Menu():
         emoji = "👤"
     
     tk.Label(user_frame, text=f"{emoji} © 2025 Полиглотики — Добро пожаловать, {username}{role_text}!",
-             font=("Arial", 11), bg="#e8eaf6", fg="#555").pack(pady=12)
+             font=("Arial", 11), bg="#C8E6C9", fg="#555").pack(pady=12)
 
     root.mainloop()
 
@@ -561,72 +1294,72 @@ def show_register_window(login_win, login_parent_entry=None):
     reg_win.geometry("450x620")
     reg_win.resizable(False, False)
     
-    # Красивый градиентный фон
-    reg_win.configure(bg="#f0f8ff")
+    # Бледно-желтый фон
+    reg_win.configure(bg="#fffacd")
 
     # Центрируем окно
     center_window(reg_win)
 
-    # Заголовок с иконкой
-    header_frame = tk.Frame(reg_win, bg="#4169e1", height=80)
+    # Заголовок с зеленым фоном
+    header_frame = tk.Frame(reg_win, bg="#4CAF50", height=80)
     header_frame.pack(fill="x")
     header_frame.pack_propagate(False)
     
     tk.Label(header_frame, text="✏️ Создайте аккаунт", 
-             font=("Arial", 22, "bold"), bg="#4169e1", fg="white").pack(pady=20)
+             font=("Arial", 22, "bold"), bg="#4CAF50", fg="white").pack(pady=20)
     
     # Создаем контейнер для полей
-    container = tk.Frame(reg_win, bg="#f0f8ff", padx=30, pady=20)
+    container = tk.Frame(reg_win, bg="#fffacd", padx=30, pady=20)
     container.pack(fill="both", expand=True)
 
     # Логин с иконкой
-    login_frame = tk.Frame(container, bg="#f0f8ff")
+    login_frame = tk.Frame(container, bg="#fffacd")
     login_frame.pack(fill="x", pady=10)
     tk.Label(login_frame, text="👤 Логин:", font=("Arial", 11, "bold"), 
-             bg="#f0f8ff", fg="#333").pack(anchor="w")
+             bg="#fffacd", fg="#2e7d32").pack(anchor="w")
     login_entry = tk.Entry(login_frame, width=35, font=("Arial", 11), 
                           highlightthickness=2, relief="solid", bd=1)
-    login_entry.config(highlightbackground="#ccc", highlightcolor="#4169e1")
+    login_entry.config(highlightbackground="#ccc", highlightcolor="#4CAF50")
     login_entry.pack(pady=5)
     
     # Пароль с иконкой
-    password_frame = tk.Frame(container, bg="#f0f8ff")
+    password_frame = tk.Frame(container, bg="#fffacd")
     password_frame.pack(fill="x", pady=10)
     tk.Label(password_frame, text="🔒 Пароль:", font=("Arial", 11, "bold"), 
-             bg="#f0f8ff", fg="#333").pack(anchor="w")
+             bg="#fffacd", fg="#2e7d32").pack(anchor="w")
     password_entry = tk.Entry(password_frame, show="*", width=35, font=("Arial", 11),
                              highlightthickness=2, relief="solid", bd=1)
-    password_entry.config(highlightbackground="#ccc", highlightcolor="#4169e1")
+    password_entry.config(highlightbackground="#ccc", highlightcolor="#4CAF50")
     password_entry.pack(pady=5)
 
     # Возраст с иконкой
-    age_frame = tk.Frame(container, bg="#f0f8ff")
+    age_frame = tk.Frame(container, bg="#fffacd")
     age_frame.pack(fill="x", pady=10)
     tk.Label(age_frame, text="🎂 Возраст:", font=("Arial", 11, "bold"), 
-             bg="#f0f8ff", fg="#333").pack(anchor="w")
+             bg="#fffacd", fg="#2e7d32").pack(anchor="w")
     age_entry = tk.Entry(age_frame, width=35, font=("Arial", 11),
                         highlightthickness=2, relief="solid", bd=1)
-    age_entry.config(highlightbackground="#ccc", highlightcolor="#4169e1")
+    age_entry.config(highlightbackground="#ccc", highlightcolor="#4CAF50")
     age_entry.pack(pady=5)
 
     # Роль с красивым дизайном
-    role_frame = tk.Frame(container, bg="#f0f8ff")
+    role_frame = tk.Frame(container, bg="#fffacd")
     role_frame.pack(fill="x", pady=15)
     tk.Label(role_frame, text="👥 Выберите роль:", font=("Arial", 11, "bold"), 
-             bg="#f0f8ff", fg="#333").pack(anchor="w", pady=(0, 8))
+             bg="#fffacd", fg="#2e7d32").pack(anchor="w", pady=(0, 8))
     
     role_var = tk.StringVar(value=None)
 
     # Стильные радиокнопки
-    role_container = tk.Frame(role_frame, bg="#e3f2fd", relief="solid", bd=1)
+    role_container = tk.Frame(role_frame, bg="#e8f5e9", relief="solid", bd=1)
     role_container.pack(fill="x", pady=5)
     
     tk.Radiobutton(role_container, text="🎓 Ученик", variable=role_var, value="ученик", 
-                   bg="#e3f2fd", font=("Arial", 11), padx=20, pady=8,
+                   bg="#e8f5e9", font=("Arial", 11), padx=20, pady=8,
                    selectcolor="#bbdefb", activebackground="#90caf9").pack(side="left", padx=10)
     
     tk.Radiobutton(role_container, text="👨‍🏫 Учитель", variable=role_var, value="учитель", 
-                   bg="#e3f2fd", font=("Arial", 11), padx=20, pady=8,
+                   bg="#e8f5e9", font=("Arial", 11), padx=20, pady=8,
                    selectcolor="#bbdefb", activebackground="#90caf9").pack(side="left", padx=10)
 
     def submit():
@@ -686,41 +1419,41 @@ def show_login_window():
     win.title("Вход в Полиглотики")
     win.geometry("420x500")
     win.resizable(False, False)
-    win.configure(bg="#f0f8ff")
+    win.configure(bg="#fffacd")  # Бледно-желтый фон
 
     # Центрируем окно
     center_window(win)
     
     # Красивый заголовок
-    header_frame = tk.Frame(win, bg="#4169e1", height=100)
+    header_frame = tk.Frame(win, bg="#4CAF50", height=100)
     header_frame.pack(fill="x")
     header_frame.pack_propagate(False)
     
     tk.Label(header_frame, text="🎓 Добро пожаловать!", 
-             font=("Arial", 26, "bold"), bg="#4169e1", fg="white").pack(pady=25)
+             font=("Arial", 26, "bold"), bg="#4CAF50", fg="white").pack(pady=25)
     
     # Контейнер для полей
-    container = tk.Frame(win, bg="#f0f8ff", padx=40, pady=30)
+    container = tk.Frame(win, bg="#fffacd", padx=40, pady=30)
     container.pack(fill="both", expand=True)
 
     # Логин
-    login_frame = tk.Frame(container, bg="#f0f8ff")
+    login_frame = tk.Frame(container, bg="#fffacd")
     login_frame.pack(fill="x", pady=15)
     tk.Label(login_frame, text="👤 Логин:", font=("Arial", 11, "bold"), 
-             bg="#f0f8ff", fg="#333").pack(anchor="w")
+             bg="#fffacd", fg="#2e7d32").pack(anchor="w")
     login_entry = tk.Entry(login_frame, width=35, font=("Arial", 11),
                           highlightthickness=2, relief="solid", bd=1)
-    login_entry.config(highlightbackground="#ccc", highlightcolor="#4169e1")
+    login_entry.config(highlightbackground="#ccc", highlightcolor="#4CAF50")
     login_entry.pack(pady=5)
 
     # Пароль
-    password_frame = tk.Frame(container, bg="#f0f8ff")
+    password_frame = tk.Frame(container, bg="#fffacd")
     password_frame.pack(fill="x", pady=15)
     tk.Label(password_frame, text="🔒 Пароль:", font=("Arial", 11, "bold"), 
-             bg="#f0f8ff", fg="#333").pack(anchor="w")
+             bg="#fffacd", fg="#2e7d32").pack(anchor="w")
     password_entry = tk.Entry(password_frame, show="*", width=35, font=("Arial", 11),
                              highlightthickness=2, relief="solid", bd=1)
-    password_entry.config(highlightbackground="#ccc", highlightcolor="#4169e1")
+    password_entry.config(highlightbackground="#ccc", highlightcolor="#4CAF50")
     password_entry.pack(pady=5)
 
     def login():
@@ -743,21 +1476,21 @@ def show_login_window():
 
     # Кнопка входа
     tk.Button(container, text="🚪 Войти", font=("Arial", 13, "bold"), 
-              bg="#4169e1", fg="white", width=20, height=2,
-              activebackground="#2a56d1", activeforeground="white",
+              bg="#4CAF50", fg="white", width=20, height=2,
+              activebackground="#45a049", activeforeground="white",
               relief="flat", bd=0, cursor="hand2",
               command=login).pack(pady=(0, 10))
 
     # Кнопка регистрации
     tk.Button(container, text="✨ Создать аккаунт", font=("Arial", 12, "bold"), 
-              bg="#4CAF50", fg="white", width=20, height=2,
-              activebackground="#45a049", activeforeground="white",
+              bg="#8BC34A", fg="white", width=20, height=2,
+              activebackground="#689F38", activeforeground="white",
               relief="flat", bd=0, cursor="hand2",
               command=lambda: show_register_window(win, login_entry)).pack(pady=10)
     
     # Текст под кнопками
     tk.Label(container, text="Нет аккаунта? Нажмите кнопку выше", 
-             font=("Arial", 10), bg="#f0f8ff", fg="#999").pack(pady=5)
+             font=("Arial", 10), bg="#fffacd", fg="#999").pack(pady=5)
     
     # Фокус на первое поле
     login_entry.focus()
