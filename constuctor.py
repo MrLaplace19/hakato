@@ -59,10 +59,10 @@ class LessonPlan:
 
 
 # --- Конструктор занятий ---
-def Constructor():
+def Constructor(parent_window=None):
     win = tk.Toplevel()
     win.title("Конструктор уроков")
-    win.geometry("800x700")
+    win.geometry("800x750")
     win.resizable(False, False)
     win.configure(bg="#fffacd")  # Бледно-желтый фон
 
@@ -73,6 +73,18 @@ def Constructor():
     header_frame = tk.Frame(win, bg="#4CAF50", height=80)
     header_frame.pack(fill="x")
     header_frame.pack_propagate(False)
+    
+    # Кнопка "Назад" в левом углу
+    def go_back():
+        win.destroy()
+        if parent_window:
+            parent_window.deiconify()  # Показываем родительское окно обратно
+    
+    back_btn = tk.Button(header_frame, text="← Назад", font=("Arial", 10, "bold"),
+                        bg="#2E7D32", fg="white", width=8, height=1,
+                        relief="flat", bd=0, cursor="hand2",
+                        activebackground="#1B5E20", command=go_back)
+    back_btn.place(x=10, y=25)
     
     tk.Label(header_frame, text="🎓 Конструктор уроков", 
              font=("Arial", 24, "bold"), bg="#4CAF50", fg="white").pack(pady=20)
@@ -159,9 +171,9 @@ def Constructor():
 
 # --- Окно игровых занятий для дошкольников ---
 def show_preschool_activities_window(root_parent=None):
-    # Закрываем родительское окно если оно есть
+    # Не закрываем родительское окно, просто скрываем его
     if root_parent:
-        root_parent.destroy()
+        root_parent.withdraw()  # Скрываем вместо закрытия
     
     activities_win = tk.Tk()
     activities_win.title("Игровые занятия для дошкольников")
@@ -175,6 +187,20 @@ def show_preschool_activities_window(root_parent=None):
     header_frame = tk.Frame(activities_win, bg="#4CAF50", height=100)
     header_frame.pack(fill="x")
     header_frame.pack_propagate(False)
+    
+    # Кнопка "Назад" в левом углу
+    def go_back():
+        activities_win.destroy()
+        if root_parent:
+            root_parent.deiconify()  # Показываем родительское окно обратно
+        else:
+            Menu()  # Если нет родительского окна, создаем новое меню
+    
+    back_btn = tk.Button(header_frame, text="← Назад", font=("Arial", 10, "bold"),
+                        bg="#2E7D32", fg="white", width=8, height=1,
+                        relief="flat", bd=0, cursor="hand2",
+                        activebackground="#1B5E20", command=go_back)
+    back_btn.place(x=10, y=35)
     
     tk.Label(header_frame, text="🎨 Игровые занятия для дошкольников", 
              font=("Arial", 20, "bold"), bg="#4CAF50", fg="white").pack(pady=25)
@@ -231,6 +257,14 @@ def show_preschool_activities_window(root_parent=None):
         header = tk.Frame(activity_win, bg="#4CAF50", height=80)
         header.pack(fill="x")
         header.pack_propagate(False)
+        
+        # Кнопка "Назад" в левом углу
+        back_btn = tk.Button(header, text="← Назад", font=("Arial", 9, "bold"),
+                            bg="#2E7D32", fg="white", width=7, height=1,
+                            relief="flat", bd=0, cursor="hand2",
+                            activebackground="#1B5E20", command=activity_win.destroy)
+        back_btn.place(x=10, y=25)
+        
         tk.Label(header, text=activity["title"], 
                 font=("Arial", 18, "bold"), bg="#4CAF50", fg="white").pack(pady=20)
         
@@ -278,7 +312,10 @@ def show_preschool_activities_window(root_parent=None):
     
     def back_to_menu():
         activities_win.destroy()
-        Menu()
+        if root_parent:
+            root_parent.deiconify()  # Показываем родительское окно обратно
+        else:
+            Menu()  # Если нет родительского окна, создаем новое меню
     
     tk.Button(back_frame, text="🔙 Назад в главное меню", 
               font=("Arial", 11, "bold"), bg="#8BC34A", fg="white",
@@ -291,9 +328,9 @@ def show_preschool_activities_window(root_parent=None):
 
 # --- Окно клубов для школьников ---
 def show_school_clubs_window(root_parent=None):
-    # Закрываем родительское окно если оно есть
+    # Не закрываем родительское окно, просто скрываем его
     if root_parent:
-        root_parent.destroy()
+        root_parent.withdraw()  # Скрываем вместо закрытия
     
     clubs_win = tk.Tk()
     clubs_win.title("Клубы для школьников")
@@ -307,6 +344,20 @@ def show_school_clubs_window(root_parent=None):
     header_frame = tk.Frame(clubs_win, bg="#4CAF50", height=100)
     header_frame.pack(fill="x")
     header_frame.pack_propagate(False)
+    
+    # Кнопка "Назад" в левом углу
+    def go_back():
+        clubs_win.destroy()
+        if root_parent:
+            root_parent.deiconify()  # Показываем родительское окно обратно
+        else:
+            Menu()  # Если нет родительского окна, создаем новое меню
+    
+    back_btn = tk.Button(header_frame, text="← Назад", font=("Arial", 10, "bold"),
+                        bg="#2E7D32", fg="white", width=8, height=1,
+                        relief="flat", bd=0, cursor="hand2",
+                        activebackground="#1B5E20", command=go_back)
+    back_btn.place(x=10, y=35)
     
     tk.Label(header_frame, text="🏫 Языковые клубы для школьников", 
              font=("Arial", 20, "bold"), bg="#4CAF50", fg="white").pack(pady=25)
@@ -363,6 +414,14 @@ def show_school_clubs_window(root_parent=None):
         header = tk.Frame(club_win, bg="#4CAF50", height=80)
         header.pack(fill="x")
         header.pack_propagate(False)
+        
+        # Кнопка "Назад" в левом углу
+        back_btn = tk.Button(header, text="← Назад", font=("Arial", 9, "bold"),
+                            bg="#2E7D32", fg="white", width=7, height=1,
+                            relief="flat", bd=0, cursor="hand2",
+                            activebackground="#1B5E20", command=club_win.destroy)
+        back_btn.place(x=10, y=25)
+        
         tk.Label(header, text=club["title"], 
                 font=("Arial", 16, "bold"), bg="#4CAF50", fg="white", wraplength=500).pack(pady=20)
         
@@ -410,7 +469,10 @@ def show_school_clubs_window(root_parent=None):
     
     def back_to_menu():
         clubs_win.destroy()
-        Menu()
+        if root_parent:
+            root_parent.deiconify()  # Показываем родительское окно обратно
+        else:
+            Menu()  # Если нет родительского окна, создаем новое меню
     
     tk.Button(back_frame, text="🔙 Назад в главное меню", 
               font=("Arial", 11, "bold"), bg="#8BC34A", fg="white",
@@ -419,6 +481,15 @@ def show_school_clubs_window(root_parent=None):
               command=back_to_menu).pack()
     
     clubs_win.mainloop()
+
+
+# --- Функция выхода из аккаунта ---
+def logout_and_exit(root_window):
+    """Выход из аккаунта и возврат к окну входа"""
+    global current_user
+    current_user = None
+    root_window.destroy()
+    show_login_window()
 
 
 # --- Главное меню ---
@@ -436,6 +507,14 @@ def Menu():
     header_frame = tk.Frame(root, bg="#4CAF50", height=120)
     header_frame.pack(fill="x")
     header_frame.pack_propagate(False)
+    
+    # Кнопка "Выйти из аккаунта" в правом углу (только для авторизованных пользователей)
+    if current_user:
+        logout_btn = tk.Button(header_frame, text="🚪 Выйти", font=("Arial", 10, "bold"),
+                              bg="#D32F2F", fg="white", width=10, height=1,
+                              relief="flat", bd=0, cursor="hand2",
+                              activebackground="#B71C1C", command=lambda: logout_and_exit(root))
+        logout_btn.place(relx=0.85, y=25)
     
     tk.Label(header_frame, text="🎓 ПОЛИГЛОТИКИ", 
              font=("Arial", 32, "bold"), bg="#4CAF50", fg="white").pack(pady=(20, 5))
@@ -468,6 +547,7 @@ def Menu():
     def check_preschool_access():
         user_role = current_user.get("role") if current_user else None
         if user_role == "учитель" or user_age is None or user_age <= 7:
+            root.withdraw()  # Скрываем главное меню
             show_preschool_activities_window(root)
         else:
             year_word = "лет" if user_age > 4 else ("год" if user_age == 1 else "года")
@@ -481,6 +561,7 @@ def Menu():
     def check_club_access():
         user_role = current_user.get("role") if current_user else None
         if user_role == "учитель" or user_age is None or user_age >= 7:
+            root.withdraw()  # Скрываем главное меню
             show_school_clubs_window(root)
         else:
             year_word = "лет" if user_age > 4 else ("год" if user_age == 1 else "года")
@@ -533,11 +614,15 @@ def Menu():
 
     # Показываем кнопку конструктора только для учителей
     if current_user and current_user.get("role") == "учитель":
+        def open_constructor():
+            root.withdraw()  # Скрываем главное меню
+            Constructor(root)
+        
         tk.Button(center_frame, text="🛠️ Конструктор занятий", 
                   font=("Arial", 16, "bold"), bg="#8BC34A", fg="white", 
                   width=28, height=2, relief="flat", bd=0,
                   activebackground="#689F38", cursor="hand2",
-                  command=Constructor).pack()
+                  command=open_constructor).pack()
 
     # Методика
     method_frame = tk.Frame(main_container, bg="#e8f5e9", relief="solid", bd=1, padx=20, pady=12)
