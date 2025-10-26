@@ -970,7 +970,6 @@ class ConsoleLessonBuilder:
     def _generate_objectives(
         self, theme: str, age_group: AgeGroup
     ) -> List[str]:
-<<<<<<< HEAD
         """Генерирует образовательные цели на основе возраста и уровня"""
         age_key = age_group.value
         level_key = level.value
@@ -1605,17 +1604,6 @@ class ConsoleLessonBuilder:
                 "Поддерживать интерес учащихся"
             ]
         }
-=======
-        # Упрощенные цели без уровней
-        base_objectives = [
-            "Познакомиться с базовой лексикой по теме",
-            "Научиться произносить новые слова",
-            "Развить интерес к английскому через игры",
-            "Практиковать говорение в игровой форме"
-        ]
-        
-        return base_objectives
->>>>>>> origin/NIKITA
 
     def _generate_vocabulary(self, theme: str, age_group: AgeGroup) -> List[str]:
         """Генерирует словарный запас с учетом возраста и темы"""
@@ -1652,7 +1640,6 @@ class ConsoleLessonBuilder:
         }
 
         words = vocabulary_bank.get(theme, [])
-<<<<<<< HEAD
         return words[:limit]
 
     def _get_vocabulary_with_details(self, theme: str, age_group: AgeGroup) -> List[dict]:
@@ -1751,11 +1738,6 @@ class ConsoleLessonBuilder:
                 })
         
         return words_details
-=======
-        # Ограничиваем количество слов по возрасту
-        word_limit = {"1-3": 3, "4-7": 5, "8-15": 8}
-        return words[: word_limit.get(age_group.value, 5)]
->>>>>>> origin/NIKITA
 
     def _generate_activities(
         self, theme: str, age_group: AgeGroup, duration: int
