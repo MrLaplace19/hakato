@@ -10,42 +10,48 @@ class lesson:
 
         self._validate()
 
-    
     def _validate(self):
-
         if not self.title or len(self.title.strip()) == 0:
             raise ValueError("Название урока не может быть пустым")
-        
+
         if len(self.title) > 100:
             raise ValueError("Название урока слишком длинное")
-        
+
         # Проверка target_age
         if not isinstance(self.target_age, str) or "-" not in self.target_age:
             raise ValueError("Возраст должен быть в формате 'мин-макс'")
-        
+
         try:
             min_age, max_age = map(int, self.target_age.split("-"))
             if min_age < 1 or max_age > 18 or min_age >= max_age:
                 raise ValueError("Некорректный возрастной диапазон")
         except ValueError:
             raise ValueError("Возраст должен содержать числа в формате 'мин-макс'")
-        
+
         # Проверка level
-        valid_levels = ["beginner", "elementary", "intermediate", "upper-intermediate", "advanced"]
+        valid_levels = [
+            "beginner",
+            "elementary",
+            "intermediate",
+            "upper-intermediate",
+            "advanced",
+        ]
         if self.level not in valid_levels:
             raise ValueError(f"Уровень должен быть одним из: {', '.join(valid_levels)}")
-        
+
         # Проверка duration
-        if not isinstance(self.duration, int) or self.duration <= 0 or self.duration > 180:
-            raise ValueError("Длительность должна быть положительным числом (не более 180 минут)")
-        
+        if (
+            not isinstance(self.duration, int)
+            or self.duration <= 0
+            or self.duration > 180
+        ):
+            raise ValueError(
+                "Длительность должна быть положительным числом (не более 180 минут)"
+            )
+
         # Проверка objectives
         if not self.objectives or not isinstance(self.objectives, list):
             raise ValueError("Цели урока должны быть списком")
-
-
-
-
 
     def printf(self):
         a = str(
@@ -56,6 +62,20 @@ class lesson:
                     Уровень владения английским: {self.en_level}\
                     Время урока: {self.duration}\
                     Цель урока: {self.task}"
+        )
+        return a
 
+
+class group:
+    def __init__(self, name, count, list_student):
+        self.name = name
+        self.count = count
+        self.list_student = list_student
+
+    def printf(self):
+        a = str(
+            f"Название группы: {self.name}\
+            Количество студентов: {self.count}\
+            Студенты: {self.list_student}"
         )
         return a
