@@ -6,6 +6,17 @@ import db_service
 current_user = None
 
 
+# --- Функция для центрирования окна ---
+def center_window(window):
+    """Центрирует окно на экране"""
+    window.update_idletasks()
+    width = window.winfo_width()
+    height = window.winfo_height()
+    x = (window.winfo_screenwidth() // 2) - (width // 2)
+    y = (window.winfo_screenheight() // 2) - (height // 2)
+    window.geometry(f'{width}x{height}+{x}+{y}')
+
+
 # --- Классы для Конструктора уроков ---
 class AgeGroup:
     TODDLERS = "1-3"
@@ -338,7 +349,8 @@ def Constructor():
 def Menu():
     root = tk.Tk()
     root.title("Полиглотики — Главное меню")
-    root.geometry("750x600")
+    root.geometry("800x700")
+    root.resizable(False, False)
     root.configure(bg="#f0f8ff")
 
     tk.Label(
@@ -398,8 +410,9 @@ def Menu():
         ),
     ).grid(row=0, column=1, padx=20)
 
-    center_frame = tk.Frame(root, bg="#f0f8ff")
-    center_frame.pack(pady=30)
+    # Центральная кнопка конструктора
+    center_frame = tk.Frame(main_container, bg="#f0f8ff")
+    center_frame.pack(pady=25)
 
     # Показываем кнопку конструктора только для учителей
     if current_user and current_user.get("role") == "учитель":
@@ -427,6 +440,7 @@ def Menu():
         username = current_user.get("login", "Пользователь")
         user_role = current_user.get("role", "")
         role_text = f" ({user_role})" if user_role else ""
+        emoji = "👨‍🏫" if user_role == "учитель" else "🎓"
     else:
         username = "Пользователь"
         role_text = ""
@@ -446,7 +460,10 @@ def Menu():
 def show_register_window(login_win, login_parent_entry=None):
     reg_win = tk.Toplevel()
     reg_win.title("Регистрация")
-    reg_win.geometry("400x400")
+    reg_win.geometry("450x620")
+    reg_win.resizable(False, False)
+    
+    # Красивый градиентный фон
     reg_win.configure(bg="#f0f8ff")
 
     tk.Label(
@@ -465,11 +482,22 @@ def show_register_window(login_win, login_parent_entry=None):
     password_entry = tk.Entry(reg_win, show="*", width=30)
     password_entry.pack()
 
-    tk.Label(reg_win, text="Возраст:", font=("Arial", 12), bg="#f0f8ff").pack(pady=5)
-    age_entry = tk.Entry(reg_win, width=30)
-    age_entry.pack()
+    # Возраст с иконкой
+    age_frame = tk.Frame(container, bg="#f0f8ff")
+    age_frame.pack(fill="x", pady=10)
+    tk.Label(age_frame, text="🎂 Возраст:", font=("Arial", 11, "bold"), 
+             bg="#f0f8ff", fg="#333").pack(anchor="w")
+    age_entry = tk.Entry(age_frame, width=35, font=("Arial", 11),
+                        highlightthickness=2, relief="solid", bd=1)
+    age_entry.config(highlightbackground="#ccc", highlightcolor="#4169e1")
+    age_entry.pack(pady=5)
 
-    tk.Label(reg_win, text="Роль:", font=("Arial", 12), bg="#f0f8ff").pack(pady=10)
+    # Роль с красивым дизайном
+    role_frame = tk.Frame(container, bg="#f0f8ff")
+    role_frame.pack(fill="x", pady=15)
+    tk.Label(role_frame, text="👥 Выберите роль:", font=("Arial", 11, "bold"), 
+             bg="#f0f8ff", fg="#333").pack(anchor="w", pady=(0, 8))
+    
     role_var = tk.StringVar(value=None)
 
     tk.Radiobutton(
@@ -509,7 +537,7 @@ def show_register_window(login_win, login_parent_entry=None):
             return
 
         # Добавляем пользователя в БД
-        db_service.db_insert_user_simple(login, password, int(age_str), role)
+        db_service.db_insert_user_simple(login, password, age, role)
 
         messagebox.showinfo(
             "Успех", "Вы успешно зарегистрированы! Теперь войдите в систему."
@@ -535,7 +563,8 @@ def show_register_window(login_win, login_parent_entry=None):
 def show_login_window():
     win = tk.Tk()
     win.title("Вход в Полиглотики")
-    win.geometry("400x350")
+    win.geometry("420x500")
+    win.resizable(False, False)
     win.configure(bg="#f0f8ff")
 
     tk.Label(
