@@ -12,7 +12,7 @@ class lesson:
 
     
     def _validate(self):
-        
+
         if not self.title or len(self.title.strip()) == 0:
             raise ValueError("Название урока не может быть пустым")
         
@@ -51,6 +51,11 @@ class lesson:
         a = str(
             f"  Название уровка: {self.title}\
                     Тема урока: {self.theme}\
-                    Содержание: {self.content}"
+                    Содержание: {self.content}\
+                    Возрастная группа: {self.age_group}\
+                    Уровень владения английским: {self.en_level}\
+                    Время урока: {self.duration}\
+                    Цель урока: {self.task}"
+
         )
         return a
